@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"fmt"
@@ -9,9 +9,9 @@ import (
 )
 
 /*
-*@getSecretKey(): locate secret.env and load database secrets
+ *getSecretKey(): locate secret.env and load database secrets
  */
-func getSecretKey() {
+func GetSecretKey() {
 	err := godotenv.Load("./dev/secret.env")
 	if err != nil {
 		log.Fatal("Cant load Secret file")
@@ -19,11 +19,11 @@ func getSecretKey() {
 }
 
 /*
-*@utils checkForErr(): checks if the error parameter is nil.
-*@param (error): the error passed in to be checked
-*@return (bool): A bool value to determine if there was an error or not
- */
-func checkForErr(err error) bool {
+ *checkForErr(): checks if the error parameter is nil.
+ @param (error): the error passed in to be checked
+ @return (bool): A bool value to determine if there was an error or not
+*/
+func CheckForErr(err error) bool {
 	if err != nil {
 		fmt.Println(err)
 		return true
@@ -39,12 +39,12 @@ const (
 )
 
 /*
-*@utils getConnString(): get Connection string used for connecting to db
-*@return (string): psqlconn that is used for sql.Open()
- */
-func getConnString() string {
+ *getConnString(): get Connection string used for connecting to db
+ @return (string): psqlconn that is used for sql.Open()
+*/
+func GetConnString() string {
 	//keys needed to connect to the database
-	getSecretKey()
+	GetSecretKey()
 	var dbpassword string = os.Getenv("dbpassword")
 	var dbname string = os.Getenv("dbname")
 	//generate the string
@@ -53,6 +53,22 @@ func getConnString() string {
 	return psqlconn
 }
 
+/*
+ *replyIntent(c *fiber.Ctx): function for handling conversations logic
+ @param (c *fiber.Ctx): context of fiber, mainly used for taking request body and parse it.
+ ?Handling
+ *The body will consists of a InputMessage JSON from the website.
+ *This function takes out the MessageContent field
+ *Queries it to find id (SELECT id FROM "intent" WHERE training_phrases LIKE $1, "%MessageContent%")
+ *Queries id to find Response (SELECT message_content FROM "response_message" WHERE "intent_id" = $1, id)
+*/
+// func replyIntent(c *fiber.Ctx) error {
+// 	inputMessage := new(InputMessage)
+// }
+
+/*
+ ! Only for testing
+*/
 // func queryForStuff(db sql.DB) string {
 // 	intentName := "Hello"
 // 	rows, err := db.Query(`SELECT "id" FROM "intent" WHERE "intent_name" = $1`, intentName)
