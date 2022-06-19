@@ -15,17 +15,17 @@ func helloWorld(c *fiber.Ctx) error {
 }
 func setupFiberRoute(app *fiber.App) {
 	app.Get("/", helloWorld)
+	app.Post("/replyIntent", utils.ReplyIntent)
 }
 func main() {
 	// *Database setup
-	// open database
 	db, err := sql.Open("postgres", utils.GetConnString())
 	if !utils.CheckForErr(err) {
 		fmt.Println("Connected to db")
 	}
 	// close database
 	defer db.Close()
-
+	utils.DB = db
 	// *Fiber setup
 	//Fiber routing
 	app := fiber.New()

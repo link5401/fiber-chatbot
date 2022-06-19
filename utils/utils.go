@@ -1,12 +1,22 @@
 package utils
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 
+	models "chatbot_fiber.com/app/models"
+	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
+
+type InputMessage = models.InputMesssage
+type ResponseMessage = models.ResponseMessage
+type Intent = models.Intent
+type Prompt = models.Prompt
+
+var DB *sql.DB
 
 /*
  *getSecretKey(): locate secret.env and load database secrets
@@ -58,13 +68,37 @@ func GetConnString() string {
  @param (c *fiber.Ctx): context of fiber, mainly used for taking request body and parse it.
  ?Handling
  *The body will consists of a InputMessage JSON from the website.
- *This function takes out the MessageContent field
- *Queries it to find id (SELECT id FROM "intent" WHERE training_phrases LIKE $1, "%MessageContent%")
- *Queries id to find Response (SELECT message_content FROM "response_message" WHERE "intent_id" = $1, id)
+ *This function takes out the MessageContent field.
+ *Queries it to find correct id in TABLE intent using LIKE.
+ *Continues to query that id that find correct response message.
 */
-// func replyIntent(c *fiber.Ctx) error {
-// 	inputMessage := new(InputMessage)
-// }
+var queryString string = `
+	SELECT "message_content" 
+	FROM "response_message"
+	WHERE "intent_id" = (
+		SELECT "id"
+		FROM (
+			SELECT id, unnest("training_phrases") as "phrase"
+			FROM "intent"
+		) search_training_phrase 
+		WHERE "phrase" LIKE $1
+	)`
+
+func ReplyIntent(c *fiber.Ctx) error {
+	//Parses POST request
+	inputMessage := new(InputMessage)
+	if err := c.BodyParser(inputMessage); err != nil {
+		return c.SendStatus(200)
+	}
+	var messageContent string
+	rows, err := DB.Query(queryString, "%"+inputMessage.MessageContent+"%")
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&messageContent)
+		CheckForErr(err)
+	}
+	return c.SendString(messageContent)
+}
 
 /*
  ! Only for testing
