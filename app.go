@@ -16,7 +16,7 @@ func helloWorld(c *fiber.Ctx) error {
 func setupFiberRoute(app *fiber.App) {
 	app.Get("/", helloWorld)
 	app.Post("/replyIntent", utils.ReplyIntent)
-	// app.Post("/promptTest", utils.PromptTest)
+	// app.Post("/addIntent", utils.AddIntent)
 }
 func main() {
 	// *Database setup
@@ -24,11 +24,9 @@ func main() {
 	if !utils.CheckForErr(err) {
 		fmt.Println("Connected to db")
 	}
-	// close database
 	defer db.Close()
 	utils.DB = db
 	// *Fiber setup
-	//Fiber routing
 	app := fiber.New()
 	setupFiberRoute(app)
 	app.Listen(":3000")

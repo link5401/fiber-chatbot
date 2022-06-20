@@ -19,5 +19,4 @@ type Intent struct {
 	TrainingPhrases []string
 	Reply           ResponseMessage
 	Prompt          []Prompt
-	LAQ             int
 }

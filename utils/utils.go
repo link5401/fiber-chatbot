@@ -123,6 +123,13 @@ var findPromptMessageQuery string = `
 			WHERE lower("phrase") LIKE lower($1) LIMIT 1
 	)`
 
+// var addIntentQuery string = `
+// 	WINSERT INTO intent ("intent_name","training_phrases")
+// 	VALUES($1,ARRAY [$2]);`
+// var addResponseID string = `INSERT INTO response_message("intent_id")
+// 	SELECT MAX(id) FROM intent;`
+// var addResponseContent string = `INSERT INTO response_message("message_content") VALUES($1);`
+
 /*
  @indexLastAsked: variable to track prompt progress.
 */
