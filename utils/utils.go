@@ -2,6 +2,7 @@ package utils
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -72,16 +73,16 @@ func GetConnString() string {
  *Queries it to find correct id in TABLE intent using LIKE.
  *Continues to query that id that find correct response message.
 */
-var queryString string = `
+var findResponseMessageQuery string = `
 	SELECT "message_content" 
 	FROM "response_message"
 	WHERE "intent_id" = (
 		SELECT "id"
 		FROM (
-			SELECT id, unnest("training_phrases") as "phrase"
+			SELECT "id", unnest("training_phrases") as "phrase"
 			FROM "intent"
 		) search_training_phrase 
-		WHERE "phrase" LIKE $1
+		WHERE lower("phrase") LIKE lower($1)
 	)`
 
 func ReplyIntent(c *fiber.Ctx) error {
@@ -91,13 +92,20 @@ func ReplyIntent(c *fiber.Ctx) error {
 		return c.SendStatus(200)
 	}
 	var messageContent string
-	rows, err := DB.Query(queryString, "%"+inputMessage.MessageContent+"%")
+	rows, err := DB.Query(findResponseMessageQuery, "%"+inputMessage.MessageContent+"%")
+	CheckForErr(err)
 	defer rows.Close()
 	for rows.Next() {
 		rows.Scan(&messageContent)
 		CheckForErr(err)
 	}
-	return c.SendString(messageContent)
+	reply := ResponseMessage{
+		UserID:         inputMessage.UserID,
+		MessageContent: messageContent,
+	}
+	r, err := json.Marshal(reply)
+	CheckForErr(err)
+	return c.SendString(string(r))
 }
 
 /*
