@@ -2,6 +2,7 @@ package utils
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -77,6 +78,22 @@ func stringToSlice(s string) []string {
 }
 
 /*
+ *makeReplyJSON(): Conjures up a JSON Reply of Type ReponseMessage to return
+ @param inputMessage: the message that the user sends is passed here
+ @param messageContent: the Response to that message.
+ @return ([]byte, error): The JSON mentioned above
+*/
+func makeReplyJSON(inputMessage InputMessage, messageContent string) ([]byte, error) {
+	reply := ResponseMessage{
+		UserID:         inputMessage.UserID,
+		MessageContent: messageContent,
+	}
+	r, err := json.Marshal(reply)
+	CheckForErr(err)
+	return r, err
+}
+
+/*
  * This is a string for handling replyIntent()
  */
 var findResponseMessageQuery string = `
@@ -110,3 +127,61 @@ var findPromptMessageQuery string = `
  @indexLastAsked: variable to track prompt progress.
 */
 var indexLastAsked int = -1
+
+/*
+ *queryForPrompt: function to query correct prompt from DB
+ @param (InputMessage): Contains message content, userID
+ @return ([]byte, error): a JSON that contains the current prompt, userID
+ ?Handling
+ *This function takes out the MessageContent field.
+ *Queries it to find correct id in TABLE intent using LIKE.
+ *Continues to query that id that find correct prompt.
+ *Prompt flow is based on @indexLastAsked.
+*/
+func queryForPrompt(inputMessage InputMessage) ([]byte, error) {
+	//Query for results
+	var promptQueryResult string
+	rows, err := DB.Query(findPromptMessageQuery, "%"+inputMessage.MessageContent+"%")
+	CheckForErr(err)
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&promptQueryResult)
+		CheckForErr(err)
+	}
+
+	//Check if there exists a prompt for this training_phrase
+	if promptQueryResult != "" {
+		prompts := stringToSlice(promptQueryResult)
+		if indexLastAsked < len(prompts)-1 {
+			indexLastAsked++
+			return makeReplyJSON(inputMessage, prompts[indexLastAsked])
+		}
+		indexLastAsked = -1
+	}
+	//If run out of prompts, returns a response message
+	return queryForResponse(inputMessage)
+
+}
+
+/*
+ *queryForResponse: function to query correct response message from DB
+ @param (InputMessage): Contains message content, userID
+ @return ([]byte, error): a JSON that contains the repsonse message, userID
+ ?Handling
+ *This function takes out the MessageContent field.
+ *Queries it to find correct id in TABLE intent using LIKE.
+ *Continues to query that id that find correct response message.
+*/
+func queryForResponse(inputMessage InputMessage) ([]byte, error) {
+	//Query for results
+	var messageContent string
+	rows, err := DB.Query(findResponseMessageQuery, "%"+inputMessage.MessageContent+"%")
+	CheckForErr(err)
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&messageContent)
+		CheckForErr(err)
+	}
+	//Marshal results into JSON
+	return makeReplyJSON(inputMessage, messageContent)
+}
