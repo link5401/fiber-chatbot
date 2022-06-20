@@ -16,6 +16,7 @@ func helloWorld(c *fiber.Ctx) error {
 func setupFiberRoute(app *fiber.App) {
 	app.Get("/", helloWorld)
 	app.Post("/replyIntent", utils.ReplyIntent)
+	// app.Post("/promptTest", utils.PromptTest)
 }
 func main() {
 	// *Database setup
