@@ -6,7 +6,6 @@ import (
 
 	"chatbot_fiber.com/app/utils"
 	"github.com/gofiber/fiber/v2"
-
 	_ "github.com/lib/pq"
 )
 
@@ -16,7 +15,7 @@ func helloWorld(c *fiber.Ctx) error {
 func setupFiberRoute(app *fiber.App) {
 	app.Get("/", helloWorld)
 	app.Post("/replyIntent", utils.ReplyIntent)
-	// app.Post("/addIntent", utils.AddIntent)
+	app.Post("/addIntent", utils.AddIntent)
 }
 func main() {
 	// *Database setup

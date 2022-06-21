@@ -20,3 +20,24 @@ type Intent struct {
 	Reply           ResponseMessage
 	Prompt          []Prompt
 }
+
+func (i Intent) GetAllPromptQuestion() string {
+	var s string = ""
+	for k, p := range i.Prompt {
+		s = s + p.PromptQuestion
+		if k != len(i.Prompt)-1 {
+			s += ","
+		}
+	}
+	return s
+}
+func (i Intent) GetAllTrainingPhrases() string {
+	var s string = ""
+	for k, tp := range i.TrainingPhrases {
+		s = s + tp
+		if k != len(i.TrainingPhrases)-1 {
+			s += ","
+		}
+	}
+	return s
+}

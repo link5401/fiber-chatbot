@@ -11,6 +11,7 @@ import (
  *                This function will query Prompt and Response with a InputMessage int request body
  @param (fiber.Ctx): context of fiber. This is mainly to access request/response.
 */
+
 func ReplyIntent(c *fiber.Ctx) error {
 	//Parses POST request
 	inputMessage := new(InputMessage)
@@ -37,11 +38,18 @@ func ReplyIntent(c *fiber.Ctx) error {
 	return c.SendString(string(r))
 }
 
-// func AddIntent(c *fiber.Ctx) error {
-// 	inputIntent := new(Intent)
-// 	if err := c.BodyParser(inputIntent); err != nil {
-// 		return c.SendStatus(200)
-// 	}
-
-// 	return c.SendStatus(200)
-// }
+/*
+ *AddIntent(): function for fiber to call when user wants to create an Intent on the DB
+ @param (*fiber.Ctx) context of fiber
+ ?Handling
+ *Parse the request body into newIntent
+ *Calls queryForInsertIntent(*newIntent)
+*/
+func AddIntent(c *fiber.Ctx) error {
+	newIntent := new(Intent)
+	if err := c.BodyParser(newIntent); err != nil {
+		c.SendStatus(200)
+	}
+	s := queryForInsertIntent(*newIntent)
+	return c.SendString(s)
+}

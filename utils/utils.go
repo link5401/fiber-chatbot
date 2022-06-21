@@ -64,6 +64,18 @@ func GetConnString() string {
 	return psqlconn
 }
 
+func getCurrentID() int {
+	var currentLargestID int
+	rows, err := DB.Query(currentIDQuery)
+	CheckForErr(err)
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&currentLargestID)
+		CheckForErr(err)
+	}
+	return currentLargestID
+}
+
 /*
  *stringToSlice(s string) []string: gets a string of format {"a","b","c"}, converts it to an array of ["a","b","c"]
  @param  (string) : the string of the format mentioned above
@@ -94,48 +106,6 @@ func makeReplyJSON(inputMessage InputMessage, messageContent string) ([]byte, er
 }
 
 /*
- * This is a string for handling replyIntent()
- */
-var findResponseMessageQuery string = `
-	SELECT "message_content" 
-	FROM "response_message"
-	WHERE "intent_id" = (
-		SELECT "id"
-		FROM (
-			SELECT "id", unnest("training_phrases") as "phrase"
-			FROM "intent"
-		) search_training_phrase 
-		WHERE lower("phrase") LIKE lower($1) LIMIT 1
-	)`
-
-/*
- * String for finding prompts
- */
-var findPromptMessageQuery string = `
-	SELECT prompt_question
-		FROM "prompt"
-		WHERE "intent_id" = (
-			SELECT "id"
-			FROM (
-				SELECT "id", unnest("training_phrases") as "phrase"
-				FROM "intent" 
-			) search_training_phrase 
-			WHERE lower("phrase") LIKE lower($1) LIMIT 1
-	)`
-
-// var addIntentQuery string = `
-// 	WINSERT INTO intent ("intent_name","training_phrases")
-// 	VALUES($1,ARRAY [$2]);`
-// var addResponseID string = `INSERT INTO response_message("intent_id")
-// 	SELECT MAX(id) FROM intent;`
-// var addResponseContent string = `INSERT INTO response_message("message_content") VALUES($1);`
-
-/*
- @indexLastAsked: variable to track prompt progress.
-*/
-var indexLastAsked int = -1
-
-/*
  *queryForPrompt: function to query correct prompt from DB
  @param (InputMessage): Contains message content, userID
  @return ([]byte, error): a JSON that contains the current prompt, userID
@@ -145,29 +115,42 @@ var indexLastAsked int = -1
  *Continues to query that id that find correct prompt.
  *Prompt flow is based on @indexLastAsked.
 */
+/*
+ @indexLastAsked: variable to track prompt progress.
+ @isPrompt: boolean to tell other functions if the bot is in prompt state or not
+ @promptQueryResult: Save prompt query result
+*/
+var indexLastAsked int = -1
+var isPrompt bool = false
+var promptQueryResult string
+
 func queryForPrompt(inputMessage InputMessage) ([]byte, error) {
 	//Query for results
-	var promptQueryResult string
-	rows, err := DB.Query(findPromptMessageQuery, "%"+inputMessage.MessageContent+"%")
-	CheckForErr(err)
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&promptQueryResult)
+	if !isPrompt {
+		rows, err := DB.Query(findPromptMessageQuery, "%"+inputMessage.MessageContent+"%")
 		CheckForErr(err)
+		defer rows.Close()
+		for rows.Next() {
+			rows.Scan(&promptQueryResult)
+			CheckForErr(err)
+		}
 	}
-
 	//Check if there exists a prompt for this training_phrase
 	if promptQueryResult != "" {
+		isPrompt = true
 		prompts := stringToSlice(promptQueryResult)
 		if indexLastAsked < len(prompts)-1 {
 			indexLastAsked++
 			return makeReplyJSON(inputMessage, prompts[indexLastAsked])
+		} else {
+			//If run out of prompts, returns a response message
+			promptQueryResult = ""
+			indexLastAsked = -1
+			isPrompt = false
+			return makeReplyJSON(inputMessage, "All done")
 		}
-		indexLastAsked = -1
 	}
-	//If run out of prompts, returns a response message
-	return queryForResponse(inputMessage)
-
+	return makeReplyJSON(inputMessage, "")
 }
 
 /*
@@ -190,5 +173,37 @@ func queryForResponse(inputMessage InputMessage) ([]byte, error) {
 		CheckForErr(err)
 	}
 	//Marshal results into JSON
+	if messageContent == "" {
+		return makeReplyJSON(inputMessage, "I dont get what you are saying")
+	}
 	return makeReplyJSON(inputMessage, messageContent)
+}
+
+/*
+ *queryForInserIntent(): Executes INSERT queries that relates to Intent
+ @param (Intent) an intent passed in by context
+ @return (string) a resulting string showing the results added
+ ?Handling
+ *First, Insert the intent name as well as all the training phrases, this is NOT NULL
+ *Second, if theres prompt, insert prompts. Otherwise, insert response message
+ *Return the resulting string
+*/
+func queryForInsertIntent(newIntent Intent) string {
+	s := ""
+	alltrainingPhrases := newIntent.GetAllTrainingPhrases()
+	allPromptQuestion := newIntent.GetAllPromptQuestion()
+	_, i_err := DB.Exec(insertIntentQuery, newIntent.IntentName, alltrainingPhrases)
+	s += alltrainingPhrases + "\n"
+	CheckForErr(i_err)
+
+	if allPromptQuestion != "" {
+		_, p_err := DB.Exec(insertPromptQuery, getCurrentID(), allPromptQuestion)
+		s += allPromptQuestion + "\n"
+		CheckForErr(p_err)
+	} else if newIntent.Reply.MessageContent != "" {
+		_, r_err := DB.Exec(insertResponseQuery, getCurrentID(), newIntent.Reply.MessageContent)
+		s += newIntent.Reply.MessageContent + "\n"
+		CheckForErr(r_err)
+	}
+	return s
 }
