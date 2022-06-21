@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -48,8 +49,25 @@ func ReplyIntent(c *fiber.Ctx) error {
 func AddIntent(c *fiber.Ctx) error {
 	newIntent := new(Intent)
 	if err := c.BodyParser(newIntent); err != nil {
-		c.SendStatus(200)
+		return c.SendStatus(200)
 	}
 	s := queryForInsertIntent(*newIntent)
 	return c.SendString(s)
+}
+
+/*
+ *DeleteIntent(): serves DELETE request that revolves around Intent
+ @param (*fiber.Ctx) context of fiber
+ ?Handling
+ *Parse the request body
+ *Calls qeuryForDeleteIntent
+*/
+func DeleteIntent(c *fiber.Ctx) error {
+	intent := new(Intent)
+	if err := c.BodyParser(intent); err != nil {
+		return c.SendStatus(200)
+	}
+	fmt.Println(intent.IntentName)
+	queryForDeleteIntent(intent.IntentName)
+	return c.SendStatus(200)
 }

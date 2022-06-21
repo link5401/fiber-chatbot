@@ -196,10 +196,13 @@ func queryForInsertIntent(newIntent Intent) string {
 	s := ""
 	alltrainingPhrases := newIntent.GetAllTrainingPhrases()
 	allPromptQuestion := newIntent.GetAllPromptQuestion()
+
+	//insert intent name, training phrases
 	_, i_err := DB.Exec(insertIntentQuery, newIntent.IntentName, alltrainingPhrases)
 	s += alltrainingPhrases + "\n"
 	CheckForErr(i_err)
 
+	//check if the bot should insert prompt or message content
 	if allPromptQuestion != "" {
 		_, p_err := DB.Exec(insertPromptQuery, getCurrentID(), allPromptQuestion)
 		s += allPromptQuestion + "\n"
@@ -209,5 +212,34 @@ func queryForInsertIntent(newIntent Intent) string {
 		s += newIntent.Reply.MessageContent + "\n"
 		CheckForErr(r_err)
 	}
+
 	return s
+}
+
+/*
+ *queryForDeleteIntent() takes in an intentName to find its intentID. Then proceeds to delete all entries with that ID
+ @param (string) an intent name that is served in context body
+ ?Handling
+ *Queries for ID
+ *Delete all rows with that ID
+*/
+func queryForDeleteIntent(intentName string) {
+	var intentID int
+	rows, err := DB.Query(findIntentIDQuery, intentName)
+	CheckForErr(err)
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&intentID)
+		CheckForErr(err)
+	}
+
+	_, err = DB.Exec(deletePromptQuery, intentID)
+	CheckForErr(err)
+
+	_, err = DB.Exec(deleteResponseQuery, intentID)
+	CheckForErr(err)
+
+	_, err = DB.Exec(deleteIntentQuery, intentID)
+	CheckForErr(err)
+
 }

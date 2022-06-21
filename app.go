@@ -16,6 +16,7 @@ func setupFiberRoute(app *fiber.App) {
 	app.Get("/", helloWorld)
 	app.Post("/replyIntent", utils.ReplyIntent)
 	app.Post("/addIntent", utils.AddIntent)
+	app.Delete("/deleteIntent", utils.DeleteIntent)
 }
 func main() {
 	// *Database setup
