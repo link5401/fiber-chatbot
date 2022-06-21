@@ -64,6 +64,10 @@ func GetConnString() string {
 	return psqlconn
 }
 
+/*
+ *getCurrentID(): returns the largest current id in "intent" TABLE
+ @return int: ...
+*/
 func getCurrentID() int {
 	var currentLargestID int
 	rows, err := DB.Query(currentIDQuery)
