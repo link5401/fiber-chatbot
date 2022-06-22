@@ -104,6 +104,22 @@ func DeleteIntent(c *fiber.Ctx) error {
 		return c.SendStatus(http.StatusBadRequest)
 	}
 	// fmt.Println(intentName)
-	queryForDeleteIntent(intent.IntentName)
-	return c.SendStatus(200)
+	s, err := queryForDeleteIntent(intent.IntentName)
+	CheckForErr(err)
+	return c.SendString(string(s))
+}
+
+// @Summary List all intents and training phrases
+// @Description List all intents
+// @Produce  json
+// @Success 200 {object} string
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
+// @Router /listIntent [get]
+func ListIntent(c *fiber.Ctx) error {
+
+	i, err := queryForAllIntents()
+	CheckForErr(err)
+	return c.SendString(string(i))
 }

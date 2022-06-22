@@ -11,14 +11,14 @@ type ResponseMessage struct {
 type Prompt struct {
 	ParamName      string
 	ParamType      string
-	PromptQuestion string
+	PromptQuestion []string
 }
 
 type Intent struct {
 	IntentName      string
 	TrainingPhrases []string
 	Reply           ResponseMessage
-	Prompt          []Prompt
+	Prompts         Prompt
 }
 type HTTPError struct {
 	status  string
@@ -27,9 +27,9 @@ type HTTPError struct {
 
 func (i Intent) GetAllPromptQuestion() string {
 	var s string = ""
-	for k, p := range i.Prompt {
-		s = s + p.PromptQuestion
-		if k != len(i.Prompt)-1 {
+	for k, p := range i.Prompts.PromptQuestion {
+		s = s + p
+		if k != len(i.Prompts.PromptQuestion)-1 {
 			s += ","
 		}
 	}

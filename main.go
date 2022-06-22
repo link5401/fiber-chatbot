@@ -33,6 +33,7 @@ func setupFiberRoute(app *fiber.App) {
 	}))
 	app.Post("/replyIntent", controllers.ReplyIntent)
 	app.Post("/addIntent", controllers.AddIntent)
+	app.Get("/listIntent", controllers.ListIntent)
 
 	app.Delete("/deleteIntent", controllers.DeleteIntent)
 }

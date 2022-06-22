@@ -156,4 +156,27 @@ paths:
           schema:
             $ref: '#/definitions/controllers.HTTPError'
       summary: Delte an intent by querying intent name
+  /listIntent:
+    get:
+      description: List all intents
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+      summary: List all intents and training phrases
 swagger: "2.0"

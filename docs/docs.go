@@ -170,6 +170,41 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/listIntent": {
+            "get": {
+                "description": "List all intents",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List all intents and training phrases",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

@@ -237,3 +237,38 @@ func queryForDeleteIntent(intentName string) ([]byte, error) {
 
 	return makeReplyJSON("admin", "deleted "+intentName)
 }
+
+func queryForAllIntents() ([]byte, error) {
+	var (
+		id               int
+		intent_name      string
+		training_phrases sql.NullString
+		message_content  sql.NullString
+		prompts          sql.NullString
+	)
+	rows, err := DB.Query(listAllIntent)
+	var intent []Intent
+	CheckForErr(err)
+	defer rows.Close()
+	for rows.Next() {
+		if err := rows.Scan(&id, &intent_name, &training_phrases, &message_content, &prompts); err != nil {
+			panic(err)
+		}
+		intent = append(intent, Intent{
+			IntentName:      intent_name,
+			TrainingPhrases: stringToSlice(training_phrases.String),
+			Reply: ResponseMessage{
+				MessageContent: message_content.String,
+			},
+			Prompts: Prompt{
+				PromptQuestion: stringToSlice(prompts.String),
+			},
+		})
+		fmt.Println(prompts)
+
+	}
+
+	i, err := json.Marshal(intent)
+
+	return i, err
+}
