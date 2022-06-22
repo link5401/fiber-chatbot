@@ -1,0 +1,63 @@
+basePath: /
+definitions:
+  utils.HTTPError:
+    type: object
+  utils.ResponseMessage:
+    properties:
+      messageContent:
+        type: string
+      userID:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: fiber@swagger.io
+    name: API Support
+  description: This is a sample swagger for Fiber
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Fiber Example API
+  version: "1.0"
+paths:
+  /ReplyIntent:
+    post:
+      consumes:
+      - application/json
+      description: Reply to an intent that is POST request from user
+      parameters:
+      - description: user id
+        in: body
+        name: UserID
+        required: true
+        schema:
+          type: string
+      - description: content of message
+        in: body
+        name: MessageContent
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+      summary: Reply to an intent
+swagger: "2.0"

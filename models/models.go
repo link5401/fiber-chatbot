@@ -20,6 +20,10 @@ type Intent struct {
 	Reply           ResponseMessage
 	Prompt          []Prompt
 }
+type HTTPError struct {
+	status  string
+	message string
+}
 
 func (i Intent) GetAllPromptQuestion() string {
 	var s string = ""
