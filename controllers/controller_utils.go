@@ -83,10 +83,10 @@ func getCurrentID() int {
  @return ([]string) an array of strings
 */
 func stringToSlice(s string) []string {
-	s1 := strings.Replace(s, "{", "", -1)
-	s2 := strings.Replace(s1, "}", "", -1)
-	s3 := strings.Replace(s2, "\"", "", -1)
-	slice := strings.Split(s3, ",")
+	s = strings.Replace(s, "{", "", -1)
+	s = strings.Replace(s, "}", "", -1)
+	s = strings.Replace(s, "\"", "", -1)
+	slice := strings.Split(s, ",")
 	return slice
 }
 
@@ -121,9 +121,11 @@ func makeReplyJSON(UserID string, messageContent string) ([]byte, error) {
  @isPrompt: boolean to tell other functions if the bot is in prompt state or not
  @promptQueryResult: Save prompt query result
 */
-var indexLastAsked int = -1
-var isPrompt bool = false
-var promptQueryResult string
+var (
+	indexLastAsked    int  = -1
+	isPrompt          bool = false
+	promptQueryResult string
+)
 
 func queryForPrompt(inputMessage InputMessage) ([]byte, error) {
 	//Query for results
@@ -254,9 +256,9 @@ func queryForAllIntents() ([]byte, error) {
 		training_phrases sql.NullString
 		message_content  sql.NullString
 		prompts          sql.NullString
+		intent           []Intent
 	)
 	rows, err := DB.Query(listAllIntent)
-	var intent []Intent
 	CheckForErr(err)
 	defer rows.Close()
 	for rows.Next() {
