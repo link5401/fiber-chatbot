@@ -8,6 +8,21 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// @Summary List all intents and training phrases
+// @Description List all intents
+// @Produce  json
+// @Success 200 {object} string
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
+// @Router /listIntent [get]
+func ListIntent(c *fiber.Ctx) error {
+
+	i, err := queryForAllIntents()
+	CheckForErr(err)
+	return c.SendString(string(i))
+}
+
 /*
  *ReplyIntent(): A handler function for /replyIntent.
  *                This function will query Prompt and Response with a InputMessage int request body
@@ -107,19 +122,4 @@ func DeleteIntent(c *fiber.Ctx) error {
 	s, err := queryForDeleteIntent(intent.IntentName)
 	CheckForErr(err)
 	return c.SendString(string(s))
-}
-
-// @Summary List all intents and training phrases
-// @Description List all intents
-// @Produce  json
-// @Success 200 {object} string
-// @Failure 400 {object} HTTPError
-// @Failure 404 {object} HTTPError
-// @Failure 500 {object} HTTPError
-// @Router /listIntent [get]
-func ListIntent(c *fiber.Ctx) error {
-
-	i, err := queryForAllIntents()
-	CheckForErr(err)
-	return c.SendString(string(i))
 }

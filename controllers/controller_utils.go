@@ -238,6 +238,15 @@ func queryForDeleteIntent(intentName string) ([]byte, error) {
 	return makeReplyJSON("admin", "deleted "+intentName)
 }
 
+/*
+ *queryForAllIntents(): listing all intents existing in DB
+ @return ([]byte, error) JSON of all intents
+ ?Handling
+ *Queries For All intents and their foreign keys
+ *Put them in the format of JSON
+ *Appends them.
+ *Returns
+*/
 func queryForAllIntents() ([]byte, error) {
 	var (
 		id               int

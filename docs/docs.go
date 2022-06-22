@@ -228,11 +228,8 @@ const docTemplate = `{
                 "intentName": {
                     "type": "string"
                 },
-                "prompt": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Prompt"
-                    }
+                "prompts": {
+                    "$ref": "#/definitions/models.Prompt"
                 },
                 "reply": {
                     "$ref": "#/definitions/models.ResponseMessage"
@@ -266,7 +263,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "promptQuestion": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

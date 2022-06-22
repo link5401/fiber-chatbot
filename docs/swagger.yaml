@@ -13,10 +13,8 @@ definitions:
     properties:
       intentName:
         type: string
-      prompt:
-        items:
-          $ref: '#/definitions/models.Prompt'
-        type: array
+      prompts:
+        $ref: '#/definitions/models.Prompt'
       reply:
         $ref: '#/definitions/models.ResponseMessage'
       trainingPhrases:
@@ -38,7 +36,9 @@ definitions:
       paramType:
         type: string
       promptQuestion:
-        type: string
+        items:
+          type: string
+        type: array
     type: object
   models.ResponseMessage:
     properties:

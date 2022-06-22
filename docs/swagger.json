@@ -221,11 +221,8 @@
                 "intentName": {
                     "type": "string"
                 },
-                "prompt": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Prompt"
-                    }
+                "prompts": {
+                    "$ref": "#/definitions/models.Prompt"
                 },
                 "reply": {
                     "$ref": "#/definitions/models.ResponseMessage"
@@ -259,7 +256,10 @@
                     "type": "string"
                 },
                 "promptQuestion": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
