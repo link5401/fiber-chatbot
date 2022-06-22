@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,11 +14,23 @@ import (
  @param (fiber.Ctx): context of fiber. This is mainly to access request/response.
 */
 
+// Check token ================================================================================
+// @Tags User
+// @Summary Check token
+// @Description Check token
+// @Param appKey header string true "Contact Admin to get"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} string "{message: 'Token is correct'}"
+// @Failure 400 {object} string "{message: string}"
+// @Failure 408 {object} string "{message: string}"
+// @Failure 500 {object} string "{message: string}"
+// @Router /ReplyIntent [post]
 func ReplyIntent(c *fiber.Ctx) error {
 	//Parses POST request
 	inputMessage := new(InputMessage)
 	if err := c.BodyParser(inputMessage); err != nil {
-		return c.SendStatus(200)
+		return c.SendStatus(http.StatusBadRequest)
 	}
 
 	//Query
@@ -49,7 +62,7 @@ func ReplyIntent(c *fiber.Ctx) error {
 func AddIntent(c *fiber.Ctx) error {
 	newIntent := new(Intent)
 	if err := c.BodyParser(newIntent); err != nil {
-		return c.SendStatus(200)
+		return c.SendStatus(http.StatusBadRequest)
 	}
 	s := queryForInsertIntent(*newIntent)
 	return c.SendString(s)
@@ -65,7 +78,7 @@ func AddIntent(c *fiber.Ctx) error {
 func DeleteIntent(c *fiber.Ctx) error {
 	intent := new(Intent)
 	if err := c.BodyParser(intent); err != nil {
-		return c.SendStatus(200)
+		return c.SendStatus(http.StatusBadRequest)
 	}
 	fmt.Println(intent.IntentName)
 	queryForDeleteIntent(intent.IntentName)
