@@ -1,8 +1,46 @@
 basePath: /
 definitions:
-  utils.HTTPError:
+  controllers.HTTPError:
     type: object
-  utils.ResponseMessage:
+  controllers.InputMessage:
+    properties:
+      messageContent:
+        type: string
+      userID:
+        type: string
+    type: object
+  controllers.Intent:
+    properties:
+      intentName:
+        type: string
+      prompt:
+        items:
+          $ref: '#/definitions/models.Prompt'
+        type: array
+      reply:
+        $ref: '#/definitions/models.ResponseMessage'
+      trainingPhrases:
+        items:
+          type: string
+        type: array
+    type: object
+  controllers.ResponseMessage:
+    properties:
+      messageContent:
+        type: string
+      userID:
+        type: string
+    type: object
+  models.Prompt:
+    properties:
+      paramName:
+        type: string
+      paramType:
+        type: string
+      promptQuestion:
+        type: string
+    type: object
+  models.ResponseMessage:
     properties:
       messageContent:
         type: string
@@ -14,12 +52,12 @@ info:
   contact:
     email: fiber@swagger.io
     name: API Support
-  description: This is a sample swagger for Fiber
+  description: Chatbot API with Fiber
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Fiber Example API
+  title: Chatbot API
   version: "1.0"
 paths:
   /ReplyIntent:
@@ -30,34 +68,92 @@ paths:
       parameters:
       - description: user id
         in: body
-        name: UserID
+        name: inputMessage
         required: true
         schema:
-          type: string
-      - description: content of message
-        in: body
-        name: MessageContent
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/controllers.InputMessage'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/utils.ResponseMessage'
+            $ref: '#/definitions/controllers.ResponseMessage'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/utils.HTTPError'
+            $ref: '#/definitions/controllers.HTTPError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/utils.HTTPError'
+            $ref: '#/definitions/controllers.HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/utils.HTTPError'
+            $ref: '#/definitions/controllers.HTTPError'
       summary: Reply to an intent
+  /addIntent:
+    post:
+      consumes:
+      - application/json
+      description: Add an intent to DB
+      parameters:
+      - description: Name of new intent
+        in: body
+        name: newIntent
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Intent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+      summary: Add an intent to DB
+  /deleteIntent:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an intent from DB, ===ONLY NEED  TO PASS IN IntentName===
+      parameters:
+      - description: Name of the intent that you want to delete from db
+        in: body
+        name: intentName
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.Intent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+      summary: Delte an intent by querying intent name
 swagger: "2.0"

@@ -7,8 +7,8 @@ import (
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
+	controllers "github.com/link5401/fiber-chatbot/controllers"
 	_ "github.com/link5401/fiber-chatbot/docs"
-	"github.com/link5401/fiber-chatbot/utils"
 )
 
 func helloWorld(c *fiber.Ctx) error {
@@ -31,15 +31,15 @@ func setupFiberRoute(app *fiber.App) {
 		// Ability to change OAuth2 redirect uri location
 		OAuth2RedirectUrl: "http://localhost:3000/swagger/oauth2-redirect.html",
 	}))
-	app.Post("/replyIntent", utils.ReplyIntent)
-	app.Post("/addIntent", utils.AddIntent)
+	app.Post("/replyIntent", controllers.ReplyIntent)
+	app.Post("/addIntent", controllers.AddIntent)
 
-	app.Delete("/deleteIntent", utils.DeleteIntent)
+	app.Delete("/deleteIntent", controllers.DeleteIntent)
 }
 
-// @title Fiber Example API
+// @title Chatbot API
 // @version 1.0
-// @description This is a sample swagger for Fiber
+// @description Chatbot API with Fiber
 // @termsOfService http://swagger.io/terms/
 // @contact.name API Support
 // @contact.email fiber@swagger.io
@@ -49,12 +49,12 @@ func setupFiberRoute(app *fiber.App) {
 // @BasePath /
 func main() {
 	// *Database setup
-	db, err := sql.Open("postgres", utils.GetConnString())
-	if !utils.CheckForErr(err) {
+	db, err := sql.Open("postgres", controllers.GetConnString())
+	if !controllers.CheckForErr(err) {
 		fmt.Println("Connected to db")
 	}
 	defer db.Close()
-	utils.DB = db
+	controllers.DB = db
 	// *Fiber setup
 	app := fiber.New()
 

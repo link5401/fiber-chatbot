@@ -37,20 +37,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "user id",
-                        "name": "UserID",
+                        "name": "inputMessage",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "content of message",
-                        "name": "MessageContent",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/controllers.InputMessage"
                         }
                     }
                 ],
@@ -58,25 +49,123 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
+                            "$ref": "#/definitions/controllers.ResponseMessage"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/utils.HTTPError"
+                            "$ref": "#/definitions/controllers.HTTPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/utils.HTTPError"
+                            "$ref": "#/definitions/controllers.HTTPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/utils.HTTPError"
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/addIntent": {
+            "post": {
+                "description": "Add an intent to DB",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Add an intent to DB",
+                "parameters": [
+                    {
+                        "description": "Name of new intent",
+                        "name": "newIntent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Intent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/deleteIntent": {
+            "delete": {
+                "description": "Delete an intent from DB, ===ONLY NEED  TO PASS IN IntentName===",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delte an intent by querying intent name",
+                "parameters": [
+                    {
+                        "description": "Name of the intent that you want to delete from db",
+                        "name": "intentName",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Intent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
                         }
                     }
                 }
@@ -84,10 +173,69 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "utils.HTTPError": {
+        "controllers.HTTPError": {
             "type": "object"
         },
-        "utils.ResponseMessage": {
+        "controllers.InputMessage": {
+            "type": "object",
+            "properties": {
+                "messageContent": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.Intent": {
+            "type": "object",
+            "properties": {
+                "intentName": {
+                    "type": "string"
+                },
+                "prompt": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Prompt"
+                    }
+                },
+                "reply": {
+                    "$ref": "#/definitions/models.ResponseMessage"
+                },
+                "trainingPhrases": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "controllers.ResponseMessage": {
+            "type": "object",
+            "properties": {
+                "messageContent": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Prompt": {
+            "type": "object",
+            "properties": {
+                "paramName": {
+                    "type": "string"
+                },
+                "paramType": {
+                    "type": "string"
+                },
+                "promptQuestion": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ResponseMessage": {
             "type": "object",
             "properties": {
                 "messageContent": {
@@ -107,8 +255,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:3000",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Fiber Example API",
-	Description:      "This is a sample swagger for Fiber",
+	Title:            "Chatbot API",
+	Description:      "Chatbot API with Fiber",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }
