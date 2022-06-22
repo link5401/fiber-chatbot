@@ -216,7 +216,7 @@ func queryForInsertIntent(newIntent Intent) ([]byte, error) {
  *Queries for ID
  *Delete all rows with that ID
 */
-func queryForDeleteIntent(intentName string) {
+func queryForDeleteIntent(intentName string) ([]byte, error) {
 	var intentID int
 	rows, err := DB.Query(findIntentIDQuery, intentName)
 	CheckForErr(err)
@@ -235,4 +235,5 @@ func queryForDeleteIntent(intentName string) {
 	_, err = DB.Exec(deleteIntentQuery, intentID)
 	CheckForErr(err)
 
+	return makeReplyJSON("admin", "deleted "+intentName)
 }
