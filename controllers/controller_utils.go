@@ -284,6 +284,15 @@ func queryForAllIntents() ([]byte, error) {
 	return i, err
 }
 
+/*
+ *queryForModifyIntent(): query call to modify an intent
+ @return ([]byte, error) JSON of new intent
+ ?Handling
+ *Queries for intent ID
+ *Update based on new info
+ *Returns
+*/
+
 func queryForModifyIntent(intent Intent) ([]byte, error) {
 	var (
 		intentID   int
