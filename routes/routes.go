@@ -12,7 +12,6 @@ func helloWorld(c *fiber.Ctx) error {
 }
 
 func SetupFiberRoute(app *fiber.App) {
-
 	// Default config
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
