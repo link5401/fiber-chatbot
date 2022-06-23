@@ -9,8 +9,8 @@ type ResponseMessage struct {
 	MessageContent string
 }
 type Prompt struct {
-	ParamName      string
-	ParamType      string
+	// ParamName      string
+	// ParamType      string
 	PromptQuestion []string
 }
 

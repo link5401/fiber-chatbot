@@ -308,13 +308,8 @@ const docTemplate = `{
         "models.Prompt": {
             "type": "object",
             "properties": {
-                "paramName": {
-                    "type": "string"
-                },
-                "paramType": {
-                    "type": "string"
-                },
                 "promptQuestion": {
+                    "description": "ParamName      string\nParamType      string",
                     "type": "array",
                     "items": {
                         "type": "string"
