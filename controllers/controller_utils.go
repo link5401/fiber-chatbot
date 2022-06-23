@@ -283,3 +283,25 @@ func queryForAllIntents() ([]byte, error) {
 
 	return i, err
 }
+
+func queryForModifyIntent(intent Intent) ([]byte, error) {
+	var (
+		intentID   int
+		intentName string = intent.IntentName
+	)
+	rows, err := DB.Query(findIntentIDQuery, intentName)
+	CheckForErr(err)
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&intentID)
+		CheckForErr(err)
+	}
+	_, err = DB.Query(updateIntent, intent.NewName, intent.GetAllTrainingPhrases(), intentID)
+	CheckForErr(err)
+	_, err = DB.Query(updatePrompt, intent.GetAllPromptQuestion(), intentID)
+	CheckForErr(err)
+	_, err = DB.Query(updateResponse, intent.Reply.MessageContent, intentID)
+	CheckForErr(err)
+	i, err := json.Marshal(intent)
+	return i, err
+}

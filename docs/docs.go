@@ -205,6 +205,55 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/modifyIntent": {
+            "patch": {
+                "description": "Modify an intent.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Modify an intent",
+                "parameters": [
+                    {
+                        "description": "The new intent, pass in NewName to change the current name",
+                        "name": "intent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Intent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -226,6 +275,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "intentName": {
+                    "type": "string"
+                },
+                "newName": {
                     "type": "string"
                 },
                 "prompts": {

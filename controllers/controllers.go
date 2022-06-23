@@ -123,3 +123,23 @@ func DeleteIntent(c *fiber.Ctx) error {
 	CheckForErr(err)
 	return c.SendString(string(s))
 }
+
+// @Summary Modify an intent
+// @Description Modify an intent.
+// @Param intent body Intent true "The new intent, pass in NewName to change the current name"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} string
+// @Failure 400 {object} HTTPError
+// @Failure 404 {object} HTTPError
+// @Failure 500 {object} HTTPError
+// @Router /modifyIntent [patch]
+func ModifyIntent(c *fiber.Ctx) error {
+	var intent Intent
+	if err := c.BodyParser(&intent); err != nil {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+	q, err := queryForModifyIntent(intent)
+	CheckForErr(err)
+	return c.SendString("modified to " + string(q))
+}

@@ -15,6 +15,7 @@ type Prompt struct {
 }
 
 type Intent struct {
+	NewName         string
 	IntentName      string
 	TrainingPhrases []string
 	Reply           ResponseMessage

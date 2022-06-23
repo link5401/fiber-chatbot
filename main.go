@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/gofiber/fiber/v2/middleware/cors"
+
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
@@ -16,6 +18,12 @@ func helloWorld(c *fiber.Ctx) error {
 }
 
 func setupFiberRoute(app *fiber.App) {
+	// Default config
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "GET,POST,PATCH,PUT,DELETE",
+	}))
+
 	app.Get("/", helloWorld)
 	app.Get("/swagger/*", swagger.HandlerDefault)     // default
 	app.Get("/swagger/*", swagger.New(swagger.Config{ // custom
@@ -36,6 +44,7 @@ func setupFiberRoute(app *fiber.App) {
 	app.Get("/listIntent", controllers.ListIntent)
 
 	app.Delete("/deleteIntent", controllers.DeleteIntent)
+	app.Patch("/modifyIntent", controllers.ModifyIntent)
 }
 
 // @title Chatbot API
