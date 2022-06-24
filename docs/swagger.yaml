@@ -11,9 +11,9 @@ definitions:
     type: object
   controllers.Intent:
     properties:
-      intentName:
+      IntentName:
         type: string
-      newName:
+      NewName:
         type: string
       prompts:
         $ref: '#/definitions/models.Prompt'
@@ -26,26 +26,23 @@ definitions:
     type: object
   controllers.ResponseMessage:
     properties:
-      messageContent:
+      message_content:
         type: string
-      userID:
+      user_id:
         type: string
     type: object
   models.Prompt:
     properties:
       promptQuestion:
-        description: |-
-          ParamName      string
-          ParamType      string
         items:
           type: string
         type: array
     type: object
   models.ResponseMessage:
     properties:
-      messageContent:
+      message_content:
         type: string
-      userID:
+      user_id:
         type: string
     type: object
 host: localhost:3000
@@ -166,7 +163,9 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            items:
+              $ref: '#/definitions/controllers.Intent'
+            type: array
         "400":
           description: Bad Request
           schema:
@@ -184,7 +183,7 @@ paths:
     patch:
       consumes:
       - application/json
-      description: Modify an intent.
+      description: Modify an intent to the body's intent by querying "IntentName".
       parameters:
       - description: The new intent, pass in NewName to change the current name
         in: body
@@ -198,7 +197,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/controllers.Intent'
         "400":
           description: Bad Request
           schema:

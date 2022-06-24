@@ -182,7 +182,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/controllers.Intent"
+                            }
                         }
                     },
                     "400": {
@@ -208,7 +211,7 @@ const docTemplate = `{
         },
         "/modifyIntent": {
             "patch": {
-                "description": "Modify an intent.",
+                "description": "Modify an intent to the body's intent by querying \"IntentName\".",
                 "consumes": [
                     "application/json"
                 ],
@@ -231,7 +234,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/controllers.Intent"
                         }
                     },
                     "400": {
@@ -274,10 +277,10 @@ const docTemplate = `{
         "controllers.Intent": {
             "type": "object",
             "properties": {
-                "intentName": {
+                "IntentName": {
                     "type": "string"
                 },
-                "newName": {
+                "NewName": {
                     "type": "string"
                 },
                 "prompts": {
@@ -297,10 +300,10 @@ const docTemplate = `{
         "controllers.ResponseMessage": {
             "type": "object",
             "properties": {
-                "messageContent": {
+                "message_content": {
                     "type": "string"
                 },
-                "userID": {
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -309,7 +312,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "promptQuestion": {
-                    "description": "ParamName      string\nParamType      string",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -320,10 +322,10 @@ const docTemplate = `{
         "models.ResponseMessage": {
             "type": "object",
             "properties": {
-                "messageContent": {
+                "message_content": {
                     "type": "string"
                 },
-                "userID": {
+                "user_id": {
                     "type": "string"
                 }
             }

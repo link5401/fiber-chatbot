@@ -175,7 +175,10 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/controllers.Intent"
+                            }
                         }
                     },
                     "400": {
@@ -201,7 +204,7 @@
         },
         "/modifyIntent": {
             "patch": {
-                "description": "Modify an intent.",
+                "description": "Modify an intent to the body's intent by querying \"IntentName\".",
                 "consumes": [
                     "application/json"
                 ],
@@ -224,7 +227,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/controllers.Intent"
                         }
                     },
                     "400": {
@@ -267,10 +270,10 @@
         "controllers.Intent": {
             "type": "object",
             "properties": {
-                "intentName": {
+                "IntentName": {
                     "type": "string"
                 },
-                "newName": {
+                "NewName": {
                     "type": "string"
                 },
                 "prompts": {
@@ -290,10 +293,10 @@
         "controllers.ResponseMessage": {
             "type": "object",
             "properties": {
-                "messageContent": {
+                "message_content": {
                     "type": "string"
                 },
-                "userID": {
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -302,7 +305,6 @@
             "type": "object",
             "properties": {
                 "promptQuestion": {
-                    "description": "ParamName      string\nParamType      string",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -313,10 +315,10 @@
         "models.ResponseMessage": {
             "type": "object",
             "properties": {
-                "messageContent": {
+                "message_content": {
                     "type": "string"
                 },
-                "userID": {
+                "user_id": {
                     "type": "string"
                 }
             }

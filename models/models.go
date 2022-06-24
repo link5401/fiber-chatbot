@@ -1,25 +1,36 @@
 package models
 
+import (
+	"time"
+)
+
 type InputMesssage struct {
-	UserID         string
-	MessageContent string
+	UserID         string `gorm:"ignoreMigration"`
+	MessageContent string `gorm:"ignoreMigration"`
 }
 type ResponseMessage struct {
-	UserID         string
-	MessageContent string
+	IntentID       int    `json:"intent_id" swaggerignore:"true"`
+	UserID         string `json:"user_id"`
+	MessageContent string `json:"message_content"`
 }
+type StringArray []string
 type Prompt struct {
 	// ParamName      string
 	// ParamType      string
-	PromptQuestion []string
+	IntentID       int         `json:"intent_id" swaggerignore:"true"`
+	PromptQuestion StringArray `gorm:"type:text[]"`
 }
 
 type Intent struct {
-	NewName         string
-	IntentName      string
-	TrainingPhrases []string
-	Reply           ResponseMessage
-	Prompts         Prompt
+	ID              int             `json:"id" gorm:"primaryKey,unique" swaggerignore:"true"`
+	NewName         string          `gorm:"ignoreMigration"`
+	IntentName      string          `json:"IntentName" gorm:"unique"`
+	TrainingPhrases StringArray     `gorm:"type:text[]"`
+	Reply           ResponseMessage `gorm:"foreignkey:IntentID;references:ID;constraints:OnDelete:CASCADE"`
+	Prompts         Prompt          `gorm:"foreignkey:IntentID;references:ID;constraints:OnDelete:CASCADE"`
+	CreatedAt       time.Time       `json:"created_at" swaggerignore:"true"`
+	UpdatedAt       time.Time       `json:"updated_at" swaggerignore:"true"`
+	DeletedFlag     bool            `swaggerignore:"true"`
 }
 type HTTPError struct {
 	status  string

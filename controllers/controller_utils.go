@@ -4,12 +4,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
-	"os"
 	"strings"
+	"time"
 
-	"github.com/joho/godotenv"
 	models "github.com/link5401/fiber-chatbot/models"
+	"gorm.io/gorm"
 )
 
 type InputMessage = models.InputMesssage
@@ -18,47 +17,20 @@ type Intent = models.Intent
 type Prompt = models.Prompt
 type HTTPError = models.HTTPError
 
-var DB *sql.DB
+const TimeFormat = "2 Jan 2006 15:04:05"
 
-/*
- *getSecretKey(): locate secret.env and load database secrets
- */
-func GetSecretKey() {
-	err := godotenv.Load("./dev/secret.env")
-	if err != nil {
-		log.Fatal("Cant load Secret file")
-	}
-}
+var DB *gorm.DB
 
 /*
  *checkForErr(): checks if the error parameter is nil.
  @param (error): the error passed in to be checked
  @return (bool): A bool value to determine if there was an error or not
 */
-func CheckForErr(err error) bool {
+func CheckForErr(err error) string {
 	if err != nil {
-		fmt.Println(err)
-		return true
+		return err.Error()
 	}
-	return false
-}
-
-/*
- *getConnString(): get Connection string used for connecting to db
- @return (string): psqlconn that is used for sql.Open()
-*/
-func GetConnString() string {
-	//keys needed to connect to the database
-	GetSecretKey()
-	dbpassword := os.Getenv("dbpassword")
-	dbname := os.Getenv("dbname")
-	host := os.Getenv("host")
-	user := os.Getenv("user")
-
-	//generate the string
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		host, 5432, user, dbpassword, dbname)
-	return psqlconn
+	return ""
 }
 
 /*
@@ -67,13 +39,7 @@ func GetConnString() string {
 */
 func getCurrentID() int {
 	var currentLargestID int
-	rows, err := DB.Query(currentIDQuery)
-	CheckForErr(err)
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&currentLargestID)
-		CheckForErr(err)
-	}
+	DB.Raw(currentIDQuery).Scan(&currentLargestID)
 	return currentLargestID
 }
 
@@ -130,13 +96,7 @@ var (
 func queryForPrompt(inputMessage InputMessage) ([]byte, error) {
 	//Query for results
 	if !isPrompt {
-		rows, err := DB.Query(findPromptMessageQuery, "%"+inputMessage.MessageContent+"%")
-		CheckForErr(err)
-		defer rows.Close()
-		for rows.Next() {
-			rows.Scan(&promptQueryResult)
-			CheckForErr(err)
-		}
+		DB.Raw(findPromptMessageQuery, "%"+inputMessage.MessageContent+"%").Scan(&promptQueryResult)
 	}
 	//Check if there exists a prompt for this training_phrase
 	if promptQueryResult != "" {
@@ -168,13 +128,8 @@ func queryForPrompt(inputMessage InputMessage) ([]byte, error) {
 func queryForResponse(inputMessage InputMessage) ([]byte, error) {
 	//Query for results
 	var messageContent string
-	rows, err := DB.Query(findResponseMessageQuery, "%"+inputMessage.MessageContent+"%")
-	CheckForErr(err)
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&messageContent)
-		CheckForErr(err)
-	}
+	DB.Raw(findResponseMessageQuery, "%"+inputMessage.MessageContent+"%").Scan(&messageContent)
+
 	//Marshal results into JSON
 	if messageContent == "" {
 		return makeReplyJSON(inputMessage.UserID, "I dont get what you are saying")
@@ -196,16 +151,19 @@ func queryForInsertIntent(newIntent Intent) ([]byte, error) {
 	allPromptQuestion := newIntent.GetAllPromptQuestion()
 
 	//insert intent name, training phrases
-	_, i_err := DB.Exec(insertIntentQuery, newIntent.IntentName, alltrainingPhrases)
-	CheckForErr(i_err)
-
+	err := DB.Exec(insertIntentQuery, newIntent.IntentName, alltrainingPhrases, time.Now().Format(TimeFormat)).Error
+	if err != nil {
+		return makeReplyJSON("admin", err.Error())
+	}
 	//check if the bot should insert prompt or message content
+	fmt.Println(allPromptQuestion)
 	if allPromptQuestion != "" {
-		_, p_err := DB.Exec(insertPromptQuery, getCurrentID(), allPromptQuestion)
-		CheckForErr(p_err)
+
+		DB.Exec(insertPromptQuery, getCurrentID(), allPromptQuestion)
+
 	} else if newIntent.Reply.MessageContent != "" {
-		_, r_err := DB.Exec(insertResponseQuery, getCurrentID(), newIntent.Reply.MessageContent)
-		CheckForErr(r_err)
+		DB.Exec(insertResponseQuery, getCurrentID(), newIntent.Reply.MessageContent)
+
 	}
 
 	return makeReplyJSON("admin", "added "+newIntent.IntentName)
@@ -218,26 +176,15 @@ func queryForInsertIntent(newIntent Intent) ([]byte, error) {
  *Queries for ID
  *Delete all rows with that ID
 */
-func queryForDeleteIntent(intentName string) ([]byte, error) {
-	var intentID int
-	rows, err := DB.Query(findIntentIDQuery, intentName)
-	CheckForErr(err)
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&intentID)
-		CheckForErr(err)
-	}
+func queryForDeleteIntent(intent Intent) ([]byte, error) {
+	var (
+		intentID int
+	)
+	DB.Raw(findIntentIDQuery, intent.IntentName).Scan(&intentID)
+	DB.Exec(updateDeletedQuery, intentID)
+	DB.Exec(modifyLogQuery, time.Now().Format(TimeFormat), intentID)
 
-	_, err = DB.Exec(deletePromptQuery, intentID)
-	CheckForErr(err)
-
-	_, err = DB.Exec(deleteResponseQuery, intentID)
-	CheckForErr(err)
-
-	_, err = DB.Exec(deleteIntentQuery, intentID)
-	CheckForErr(err)
-
-	return makeReplyJSON("admin", "deleted "+intentName)
+	return makeReplyJSON("admin", "deleted")
 }
 
 /*
@@ -249,39 +196,46 @@ func queryForDeleteIntent(intentName string) ([]byte, error) {
  *Appends them.
  *Returns
 */
-func queryForAllIntents() ([]byte, error) {
+func queryForAllIntents() []Intent {
 	var (
 		id               int
 		intent_name      string
 		training_phrases sql.NullString
-		message_content  sql.NullString
-		prompts          sql.NullString
+		message_content  string
+		prompt_question  sql.NullString
+		created_at       sql.NullTime
+		updated_at       sql.NullTime
+		DeletedFlag      sql.NullBool
 		intent           []Intent
 	)
-	rows, err := DB.Query(listAllIntent)
-	CheckForErr(err)
+	rows, err := DB.Raw(listAllIntent).Rows()
+	fmt.Println(CheckForErr(err))
 	defer rows.Close()
 	for rows.Next() {
-		if err := rows.Scan(&id, &intent_name, &training_phrases, &message_content, &prompts); err != nil {
+		if err := rows.Scan(&id, &intent_name, &training_phrases, &created_at, &updated_at, &DeletedFlag, &message_content, &prompt_question); err != nil {
 			panic(err)
 		}
-		intent = append(intent, Intent{
-			IntentName:      intent_name,
-			TrainingPhrases: stringToSlice(training_phrases.String),
-			Reply: ResponseMessage{
-				MessageContent: message_content.String,
-			},
-			Prompts: Prompt{
-				PromptQuestion: stringToSlice(prompts.String),
-			},
-		})
-		fmt.Println(prompts)
+		if !DeletedFlag.Bool {
+			intent = append(intent, Intent{
+				ID:              id,
+				IntentName:      intent_name,
+				TrainingPhrases: stringToSlice(training_phrases.String),
+				Reply: models.ResponseMessage{
+					IntentID:       id,
+					MessageContent: message_content,
+				},
+				Prompts: models.Prompt{
+					IntentID:       id,
+					PromptQuestion: stringToSlice(prompt_question.String),
+				},
+				CreatedAt: created_at.Time,
+				UpdatedAt: updated_at.Time,
+			})
+		}
 
 	}
 
-	i, err := json.Marshal(intent)
-
-	return i, err
+	return intent
 }
 
 /*
@@ -298,19 +252,16 @@ func queryForModifyIntent(intent Intent) ([]byte, error) {
 		intentID   int
 		intentName string = intent.IntentName
 	)
-	rows, err := DB.Query(findIntentIDQuery, intentName)
-	CheckForErr(err)
-	defer rows.Close()
-	for rows.Next() {
-		rows.Scan(&intentID)
-		CheckForErr(err)
-	}
-	_, err = DB.Query(updateIntent, intent.NewName, intent.GetAllTrainingPhrases(), intentID)
-	CheckForErr(err)
-	_, err = DB.Query(updatePrompt, intent.GetAllPromptQuestion(), intentID)
-	CheckForErr(err)
-	_, err = DB.Query(updateResponse, intent.Reply.MessageContent, intentID)
-	CheckForErr(err)
+	DB.Raw(findIntentIDQuery, intentName).Scan(&intentID)
+
+	DB.Exec(updateIntent, intent.NewName, intent.GetAllTrainingPhrases(), intentID)
+
+	DB.Exec(updatePrompt, intent.GetAllPromptQuestion(), intentID)
+
+	DB.Exec(updateResponse, intent.Reply.MessageContent, intentID)
+
+	DB.Exec(modifyLogQuery, time.Now().Format(TimeFormat), intentID)
+	fmt.Println(intent.ID)
 	i, err := json.Marshal(intent)
 	return i, err
 }

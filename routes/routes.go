@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/link5401/fiber-chatbot/controllers"
+	"github.com/link5401/fiber-chatbot/middleware"
 )
 
 func helloWorld(c *fiber.Ctx) error {
@@ -17,7 +18,10 @@ func SetupFiberRoute(app *fiber.App) {
 		AllowOrigins: "*",
 		AllowMethods: "GET,POST,PATCH,PUT,DELETE",
 	}))
-
+	app.Use(func(c *fiber.Ctx) error {
+		err := middleware.WriteLogMain(c)
+		return err
+	})
 	app.Get("/", helloWorld)
 	app.Get("/swagger/*", swagger.HandlerDefault)     // default
 	app.Get("/swagger/*", swagger.New(swagger.Config{ // custom

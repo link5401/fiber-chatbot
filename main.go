@@ -1,12 +1,12 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
-	controllers "github.com/link5401/fiber-chatbot/controllers"
+
+	"github.com/link5401/fiber-chatbot/controllers"
+
+	database "github.com/link5401/fiber-chatbot/database"
 	_ "github.com/link5401/fiber-chatbot/docs"
 	middleware "github.com/link5401/fiber-chatbot/middleware"
 	routes "github.com/link5401/fiber-chatbot/routes"
@@ -23,15 +23,8 @@ import (
 // @host localhost:3000
 // @BasePath /
 func main() {
-
-	// *Database setup
-	db, err := sql.Open("postgres", controllers.GetConnString())
-	if !controllers.CheckForErr(err) {
-		fmt.Println("Connected to db")
-	}
-	defer db.Close()
-	controllers.DB = db
-
+	database.Connect()
+	controllers.DB = database.DB
 	// *Fiber setup
 	app := fiber.New()
 	middleware.Logging(app)

@@ -14,7 +14,9 @@ func Logging(app *fiber.App) {
 		log.Fatalf("error opening file: %v", err)
 	}
 	app.Use(logger.New(logger.Config{
-		Output: file,
+		TimeFormat: "2 Jan 2006 15:04:05",
+		TimeZone:   "Asia/Ho_Chi_Minh",
+		Output:     file,
 	}))
 
 }
