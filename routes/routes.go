@@ -20,11 +20,6 @@ func SetupFiberRoute(app *fiber.App) {
 		AllowMethods: "GET,POST,PATCH,PUT,DELETE",
 	}))
 
-	//logger setup
-	app.Use(func(c *fiber.Ctx) error {
-		err := middleware.WriteLogMain(c)
-		return err
-	})
 	//mainpage
 	app.Get("/", helloWorld)
 
@@ -43,6 +38,10 @@ func SetupFiberRoute(app *fiber.App) {
 		OAuth2RedirectUrl: "http://localhost:3000/swagger/oauth2-redirect.html",
 	}))
 
+	app.Use(func(c *fiber.Ctx) error {
+		err := middleware.WriteLogMain(c)
+		return err
+	})
 	app.Post("/replyIntent", controllers.ReplyIntent)
 	app.Post("/addIntent", controllers.AddIntent)
 	app.Get("/listIntent", controllers.ListIntent)
