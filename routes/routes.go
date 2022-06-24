@@ -13,16 +13,21 @@ func helloWorld(c *fiber.Ctx) error {
 }
 
 func SetupFiberRoute(app *fiber.App) {
-	// Default config
+
+	//cors setup
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowMethods: "GET,POST,PATCH,PUT,DELETE",
 	}))
+
+	//logger setup
 	app.Use(func(c *fiber.Ctx) error {
 		err := middleware.WriteLogMain(c)
 		return err
 	})
+	//mainpage
 	app.Get("/", helloWorld)
+
 	app.Get("/swagger/*", swagger.HandlerDefault)     // default
 	app.Get("/swagger/*", swagger.New(swagger.Config{ // custom
 		URL:         "http://example.com/doc.json",
@@ -37,10 +42,10 @@ func SetupFiberRoute(app *fiber.App) {
 		// Ability to change OAuth2 redirect uri location
 		OAuth2RedirectUrl: "http://localhost:3000/swagger/oauth2-redirect.html",
 	}))
+
 	app.Post("/replyIntent", controllers.ReplyIntent)
 	app.Post("/addIntent", controllers.AddIntent)
 	app.Get("/listIntent", controllers.ListIntent)
-
 	app.Delete("/deleteIntent", controllers.DeleteIntent)
 	app.Patch("/modifyIntent", controllers.ModifyIntent)
 }

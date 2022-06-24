@@ -280,7 +280,7 @@ const docTemplate = `{
                 "IntentName": {
                     "type": "string"
                 },
-                "NewName": {
+                "newName": {
                     "type": "string"
                 },
                 "prompts": {

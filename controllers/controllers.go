@@ -9,14 +9,14 @@ import (
 	"github.com/link5401/fiber-chatbot/middleware"
 )
 
-// @Summary List all intents and training phrases
-// @Description List all intents
-// @Produce  json
-// @Success 200 {object} []Intent
-// @Failure 400 {object} HTTPError
-// @Failure 404 {object} HTTPError
-// @Failure 500 {object} HTTPError
-// @Router /listIntent [get]
+// @Summary      List all intents and training phrases
+// @Description  List all intents
+// @Produce      json
+// @Success      200  {object}  []Intent
+// @Failure      400  {object}  HTTPError
+// @Failure      404  {object}  HTTPError
+// @Failure      500  {object}  HTTPError
+// @Router       /listIntent [get]
 func ListIntent(c *fiber.Ctx) error {
 
 	i := queryForAllIntents()
@@ -34,16 +34,16 @@ func ListIntent(c *fiber.Ctx) error {
 */
 
 // ReplyIntent ================================================================================
-// @Summary Reply to an intent
-// @Description Reply to an intent that is POST request from user
-// @Param inputMessage body InputMessage true "user id"
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} ResponseMessage
-// @Failure 400 {object} HTTPError
-// @Failure 404 {object} HTTPError
-// @Failure 500 {object} HTTPError
-// @Router /ReplyIntent [post]
+// @Summary      Reply to an intent
+// @Description  Reply to an intent that is POST request from user
+// @Param        inputMessage  body  InputMessage  true  "user id"
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  ResponseMessage
+// @Failure      400  {object}  HTTPError
+// @Failure      404  {object}  HTTPError
+// @Failure      500  {object}  HTTPError
+// @Router       /ReplyIntent [post]
 func ReplyIntent(c *fiber.Ctx) error {
 	//Parses POST request
 	inputMessage := new(InputMessage)
@@ -88,17 +88,17 @@ func ReplyIntent(c *fiber.Ctx) error {
  *Calls queryForInsertIntent(*newIntent)
 */
 
-// @Summary Add an intent to DB
-// @Description Add an intent to DB
-// @Param newIntent  body Intent true "Name of new intent"
-// @deletedFlag(hidden = true)
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} ResponseMessage
-// @Failure 400 {object} HTTPError
-// @Failure 404 {object} HTTPError
-// @Failure 500 {object} HTTPError
-// @Router /addIntent [post]
+// @Summary             Add an intent to DB
+// @Description         Add an intent to DB
+// @Param               newIntent  body  Intent  true  "Name of new intent"
+// @deletedFlag(hidden  = true)
+// @Accept              json
+// @Produce             json
+// @Success             200  {object}  ResponseMessage
+// @Failure             400  {object}  HTTPError
+// @Failure             404  {object}  HTTPError
+// @Failure             500  {object}  HTTPError
+// @Router              /addIntent [post]
 func AddIntent(c *fiber.Ctx) error {
 	newIntent := new(Intent)
 	if err := c.BodyParser(newIntent); err != nil {
@@ -118,16 +118,16 @@ func AddIntent(c *fiber.Ctx) error {
  *Parse the request body
  *Calls qeuryForDeleteIntent
 */
-// @Summary Delte an intent by querying intent name
-// @Description Delete an intent from DB, ===ONLY NEED  TO PASS IN IntentName===
-// @Param intentName body Intent true "Name of the intent that you want to delete from db"
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} ResponseMessage
-// @Failure 400 {object} HTTPError
-// @Failure 404 {object} HTTPError
-// @Failure 500 {object} HTTPError
-// @Router /deleteIntent [delete]
+// @Summary      Delte an intent by querying intent name
+// @Description  Delete an intent from DB, ===ONLY NEED  TO PASS IN IntentName===
+// @Param        intentName  body  Intent  true  "Name of the intent that you want to delete from db"
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  ResponseMessage
+// @Failure      400  {object}  HTTPError
+// @Failure      404  {object}  HTTPError
+// @Failure      500  {object}  HTTPError
+// @Router       /deleteIntent [delete]
 func DeleteIntent(c *fiber.Ctx) error {
 	var intent Intent
 	if err := c.BodyParser(&intent); err != nil {
@@ -142,16 +142,16 @@ func DeleteIntent(c *fiber.Ctx) error {
 	return c.SendString(string(s))
 }
 
-// @Summary Modify an intent
-// @Description Modify an intent to the body's intent by querying "IntentName".
-// @Param intent body Intent true "The new intent, pass in NewName to change the current name"
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} Intent
-// @Failure 400 {object} HTTPError
-// @Failure 404 {object} HTTPError
-// @Failure 500 {object} HTTPError
-// @Router /modifyIntent [patch]
+// @Summary      Modify an intent
+// @Description  Modify an intent to the body's intent by querying "IntentName".
+// @Param        intent  body  Intent  true  "The new intent, pass in NewName to change the current name"
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  Intent
+// @Failure      400  {object}  HTTPError
+// @Failure      404  {object}  HTTPError
+// @Failure      500  {object}  HTTPError
+// @Router       /modifyIntent [patch]
 func ModifyIntent(c *fiber.Ctx) error {
 	var intent Intent
 	if err := c.BodyParser(&intent); err != nil {
