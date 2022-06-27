@@ -13,10 +13,10 @@ import (
 	"github.com/link5401/fiber-chatbot/config"
 	"github.com/link5401/fiber-chatbot/controllers"
 	"github.com/link5401/fiber-chatbot/middleware"
+	"github.com/link5401/fiber-chatbot/routes"
 
 	database "github.com/link5401/fiber-chatbot/database"
 	_ "github.com/link5401/fiber-chatbot/docs"
-	routes "github.com/link5401/fiber-chatbot/routes"
 )
 
 // @title           Chatbot API
@@ -34,6 +34,9 @@ func main() {
 	controllers.DB = database.DB
 
 	// *Fiber setup and logging
+
+	app := fiber.New()
+
 	dir_path := "./assets/log/system"
 	file_name := fmt.Sprintf("%s/%s.txt", dir_path, time.Now().Format("2006-01-02"))
 	file, err := os.OpenFile(file_name, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -41,8 +44,6 @@ func main() {
 		log.Fatalf("error opening file: %v", err)
 	}
 	defer file.Close()
-
-	app := fiber.New()
 
 	app.Use(logger.New(logger.Config{
 		Format:     "${time} | ${ip} | ${method} | ${status} - ${error} | ${path} \n",
@@ -52,7 +53,8 @@ func main() {
 	}))
 
 	app.Use(func(c *fiber.Ctx) error {
-		return middleware.WriteLogMain(c)
+		err := middleware.WriteLogMain(c)
+		return err
 	})
 	// app.Use("/users/*", func(c *fiber.Ctx) error {
 	// 	middleware.WriteLogMiddleWare(c)

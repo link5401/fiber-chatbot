@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -80,8 +79,6 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	//Check if passwordm matches
-	fmt.Println(user.Password)
-	fmt.Println(models.HashPassword(input.Password))
 	if err := models.CheckPasswordHash(user.Password, input.Password); err != nil {
 		return c.Status(501).JSON(fiber.Map{
 			"UserID":         "admin",
@@ -89,7 +86,7 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 	token, err := middleware.GenerateJWToken(user.Username, c.Get("User-Agent"), c.IP())
-	fmt.Println(token)
+
 	if err != nil {
 		return c.Status(501).JSON(fiber.Map{"message": "system_error"})
 	}
@@ -97,7 +94,7 @@ func Login(c *fiber.Ctx) error {
 	time_expire := config.Config("JWT_EXPIRED_TIME")
 	minutesCount, _ := strconv.Atoi(time_expire)
 	store.Set(user.Username, []byte(token), time.Duration(minutesCount)*time.Minute)
-	fmt.Println(store)
+
 	return c.JSON(fiber.Map{
 		"UserName":       input.Username,
 		"MessageContent": "success",
