@@ -12,16 +12,16 @@ import (
 	models "github.com/link5401/fiber-chatbot/models"
 )
 
-// @Tags		 users
+// @Tags         users
 // @Summary      Add an user
 // @Description  Modify an user.
-// @Param        user body models.User true "user1"
+// @Param        user  body  models.User  true  "user1"
 // @Accept       json
 // @Produce      json
-// @Success 200 {object} 	ResponseMessage
-// @Failure 400 {object}   	HTTPError
-// @Failure 500 {object} 	HTTPError
-// @Failure 501 {object}   	HTTPError
+// @Success      200  {object}    ResponseMessage
+// @Failure      400  {object}    HTTPError
+// @Failure      500  {object}    HTTPError
+// @Failure      501  {object}    HTTPError
 // @Router       /users/addUser [post]
 func AddUser(c *fiber.Ctx) error {
 	var user models.User
@@ -52,16 +52,16 @@ func AddUser(c *fiber.Ctx) error {
 
 }
 
-// @Tags		 users
+// @Tags         users
 // @Summary      Login
 // @Description  Login
-// @Param        user body models.User true "user1"
+// @Param        user  body  models.User  true  "user1"
 // @Accept       json
 // @Produce      json
-// @Success 200 {object} 	string
-// @Failure 400 {object}   	HTTPError
-// @Failure 500 {object} 	HTTPError
-// @Failure 501 {object}   	HTTPError
+// @Success      200  {object}    string
+// @Failure      400  {object}    HTTPError
+// @Failure      500  {object}    HTTPError
+// @Failure      501  {object}    HTTPError
 // @Router       /users/Login [post]
 func Login(c *fiber.Ctx) error {
 	var input models.User

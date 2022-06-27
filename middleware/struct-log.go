@@ -35,9 +35,10 @@ func WriteLogMain(c *fiber.Ctx) error {
 
 	services.InfoRequest = string(fmt.Sprint(c.Request()))
 	services.InfoResponse = string(fmt.Sprint(c.Response()))
-
+	fmt.Println(c.Response().StatusCode())
 	services.Status = fmt.Sprint(c.Response().StatusCode())
-	// fmt.Println(services.Status)
+
+	fmt.Println(services.Status)
 	services.EndPoint = c.Path()
 	resp, _ := c.Request().MultipartForm()
 	if resp != nil {
@@ -55,12 +56,13 @@ func WriteLogMain(c *fiber.Ctx) error {
 		}
 	}
 
-	InsertLog(c)
-
+	if services.Status != "200" {
+		InsertLog(c)
+	}
 	return err
 }
 
-func WriteLogMiddleWare(c *fiber.Ctx) {
+func WriteLogMidleWare(c *fiber.Ctx) {
 	// Set data log
 
 	services.IPAddress = c.IP()
@@ -87,7 +89,9 @@ func WriteLogMiddleWare(c *fiber.Ctx) {
 		}
 	}
 
-	InsertLog(c)
+	if services.Status != "200" {
+		InsertLog(c)
+	}
 
 }
 
