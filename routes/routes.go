@@ -12,7 +12,7 @@ func helloWorld(c *fiber.Ctx) error {
 }
 
 func SetupFiberRoute(app *fiber.App) {
-	app.Get("/swagger/*", swagger.HandlerDefault)     // default
+
 	app.Get("/swagger/*", swagger.New(swagger.Config{ // custom
 		URL:         "http://example.com/doc.json",
 		DeepLinking: false,
