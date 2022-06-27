@@ -101,6 +101,8 @@ paths:
           schema:
             $ref: '#/definitions/controllers.HTTPError'
       summary: Reply to an intent
+      tags:
+      - Intents
   /intents/addIntent:
     post:
       consumes:
@@ -133,6 +135,8 @@ paths:
           schema:
             $ref: '#/definitions/controllers.HTTPError'
       summary: Add an intent to DB
+      tags:
+      - Intents
   /intents/deleteIntent:
     delete:
       consumes:
@@ -165,6 +169,8 @@ paths:
           schema:
             $ref: '#/definitions/controllers.HTTPError'
       summary: Delte an intent by querying intent name
+      tags:
+      - Intents
   /intents/listIntent:
     get:
       description: List all intents
@@ -190,6 +196,8 @@ paths:
           schema:
             $ref: '#/definitions/controllers.HTTPError'
       summary: List all intents and training phrases
+      tags:
+      - Intents
   /intents/modifyIntent:
     patch:
       consumes:
@@ -222,6 +230,8 @@ paths:
           schema:
             $ref: '#/definitions/controllers.HTTPError'
       summary: Modify an intent
+      tags:
+      - Intents
   /users/Login:
     post:
       consumes:

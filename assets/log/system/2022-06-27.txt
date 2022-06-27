@@ -222,3 +222,11 @@
 2022-06-27 14:55:30 | 127.0.0.1 | GET | 200 - - | favicon-32x32.png 
 2022-06-27 14:55:32 | 127.0.0.1 | GET | 200 - - | /intents/listIntent 
 2022-06-27 14:55:46 | 127.0.0.1 | GET | 200 - - | /intents/listIntent 
+2022-06-27 15:06:02 | 127.0.0.1 | GET | 200 - - | index.html 
+2022-06-27 15:06:02 | 127.0.0.1 | GET | 200 - - | swagger-ui.css 
+2022-06-27 15:06:02 | 127.0.0.1 | GET | 200 - - | swagger-ui-bundle.js 
+2022-06-27 15:06:02 | 127.0.0.1 | GET | 200 - - | swagger-ui-standalone-preset.js 
+2022-06-27 15:06:02 | 127.0.0.1 | GET | 200 - - | swagger-ui.css 
+2022-06-27 15:06:02 | 127.0.0.1 | GET | 200 - - | swagger-ui-bundle.js 
+2022-06-27 15:06:02 | 127.0.0.1 | GET | 200 - - | swagger-ui-standalone-preset.js 
+2022-06-27 15:06:02 | 127.0.0.1 | GET | 200 - - | doc.json 

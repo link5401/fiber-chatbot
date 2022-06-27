@@ -26,6 +26,9 @@
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Intents"
+                ],
                 "summary": "Reply to an intent",
                 "parameters": [
                     {
@@ -74,6 +77,9 @@
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Intents"
                 ],
                 "summary": "Add an intent to DB",
                 "parameters": [
@@ -124,6 +130,9 @@
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Intents"
+                ],
                 "summary": "Delte an intent by querying intent name",
                 "parameters": [
                     {
@@ -170,6 +179,9 @@
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Intents"
+                ],
                 "summary": "List all intents and training phrases",
                 "responses": {
                     "200": {
@@ -210,6 +222,9 @@
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Intents"
                 ],
                 "summary": "Modify an intent",
                 "parameters": [

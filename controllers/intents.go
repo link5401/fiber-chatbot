@@ -9,6 +9,7 @@ import (
 	"github.com/link5401/fiber-chatbot/middleware"
 )
 
+// @Tags				Intents
 // @Summary      List all intents and training phrases
 // @Description  List all intents
 // @Produce      json
@@ -34,6 +35,7 @@ func ListIntent(c *fiber.Ctx) error {
 */
 
 // ReplyIntent ================================================================================
+// @Tags				Intents
 // @Summary      Reply to an intent
 // @Description  Reply to an intent that is POST request from user
 // @Param        inputMessage  body  InputMessage  true  "user id"
@@ -87,7 +89,7 @@ func ReplyIntent(c *fiber.Ctx) error {
  *Parse the request body into newIntent
  *Calls queryForInsertIntent(*newIntent)
 */
-
+// @Tags				Intents
 // @Summary             Add an intent to DB
 // @Description         Add an intent to DB
 // @Param               newIntent  body  Intent  true  "Name of new intent"
@@ -118,6 +120,7 @@ func AddIntent(c *fiber.Ctx) error {
  *Parse the request body
  *Calls qeuryForDeleteIntent
 */
+// @Tags				Intents
 // @Summary      Delte an intent by querying intent name
 // @Description  Delete an intent from DB, ===ONLY NEED  TO PASS IN IntentName===
 // @Param        intentName  body  Intent  true  "Name of the intent that you want to delete from db"
@@ -142,6 +145,7 @@ func DeleteIntent(c *fiber.Ctx) error {
 	return c.SendString(string(s))
 }
 
+// @Tags				Intents
 // @Summary      Modify an intent
 // @Description  Modify an intent to the body's intent by querying "IntentName".
 // @Param        intent  body  Intent  true  "The new intent, pass in NewName to change the current name"

@@ -33,6 +33,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Intents"
+                ],
                 "summary": "Reply to an intent",
                 "parameters": [
                     {
@@ -81,6 +84,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Intents"
                 ],
                 "summary": "Add an intent to DB",
                 "parameters": [
@@ -131,6 +137,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Intents"
+                ],
                 "summary": "Delte an intent by querying intent name",
                 "parameters": [
                     {
@@ -177,6 +186,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Intents"
+                ],
                 "summary": "List all intents and training phrases",
                 "responses": {
                     "200": {
@@ -217,6 +229,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Intents"
                 ],
                 "summary": "Modify an intent",
                 "parameters": [
