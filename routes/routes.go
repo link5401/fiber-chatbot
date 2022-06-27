@@ -5,7 +5,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/link5401/fiber-chatbot/controllers"
-	"github.com/link5401/fiber-chatbot/middleware"
 )
 
 func helloWorld(c *fiber.Ctx) error {
@@ -19,7 +18,10 @@ func SetupFiberRoute(app *fiber.App) {
 		AllowOrigins: "*",
 		AllowMethods: "GET,POST,PATCH,PUT,DELETE",
 	}))
-
+	// appUse(jwtware.New(jwtware.Config{
+	// 	SigningMethod: "RS256",
+	// 	SigningKey: ,.
+	// }))
 	//mainpage
 	app.Get("/", helloWorld)
 
@@ -38,13 +40,12 @@ func SetupFiberRoute(app *fiber.App) {
 		OAuth2RedirectUrl: "http://localhost:3000/swagger/oauth2-redirect.html",
 	}))
 
-	app.Use(func(c *fiber.Ctx) error {
-		err := middleware.WriteLogMain(c)
-		return err
-	})
-	app.Post("/replyIntent", controllers.ReplyIntent)
-	app.Post("/addIntent", controllers.AddIntent)
-	app.Get("/listIntent", controllers.ListIntent)
-	app.Delete("/deleteIntent", controllers.DeleteIntent)
-	app.Patch("/modifyIntent", controllers.ModifyIntent)
+	app.Post("/intents/replyIntent", controllers.ReplyIntent)
+	app.Post("/intents/addIntent", controllers.AddIntent)
+	app.Get("/intents/listIntent", controllers.ListIntent)
+	app.Delete("/intents/deleteIntent", controllers.DeleteIntent)
+	app.Patch("/intents/modifyIntent", controllers.ModifyIntent)
+
+	app.Post("/users/addUser", controllers.AddUser)
+	app.Post("/users/Login", controllers.Login)
 }

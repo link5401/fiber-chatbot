@@ -16,11 +16,11 @@ import (
 // @Failure      400  {object}  HTTPError
 // @Failure      404  {object}  HTTPError
 // @Failure      500  {object}  HTTPError
-// @Router       /listIntent [get]
+// @Router       /intents/listIntent [get]
 func ListIntent(c *fiber.Ctx) error {
 
 	i := queryForAllIntents()
-	middleware.WriteLogMain(c)
+	// middleware.WriteLogMain(c)
 	middleware.InsertLog(c)
 	return c.Status(200).JSON(&fiber.Map{
 		"intentList": i,
@@ -43,7 +43,7 @@ func ListIntent(c *fiber.Ctx) error {
 // @Failure      400  {object}  HTTPError
 // @Failure      404  {object}  HTTPError
 // @Failure      500  {object}  HTTPError
-// @Router       /ReplyIntent [post]
+// @Router       /intents/ReplyIntent [post]
 func ReplyIntent(c *fiber.Ctx) error {
 	//Parses POST request
 	inputMessage := new(InputMessage)
@@ -65,14 +65,14 @@ func ReplyIntent(c *fiber.Ctx) error {
 
 	//decide if the bot should prompt or response
 	if pResponse.MessageContent != "" {
-		middleware.WriteLogMain(c)
-		middleware.InsertLog(c)
+		// middleware.WriteLogMain(c)
+		// middleware.InsertLog(c)
 		return c.Status(200).JSON(&fiber.Map{
 			"MessageContent": pResponse.MessageContent,
 			"UserID":         pResponse.UserID,
 		})
 	}
-	middleware.WriteLogMain(c)
+	// middleware.WriteLogMain(c)
 	middleware.InsertLog(c)
 	return c.Status(200).JSON(&fiber.Map{
 		"MessageContent": rResponse.MessageContent,
@@ -98,7 +98,7 @@ func ReplyIntent(c *fiber.Ctx) error {
 // @Failure             400  {object}  HTTPError
 // @Failure             404  {object}  HTTPError
 // @Failure             500  {object}  HTTPError
-// @Router              /addIntent [post]
+// @Router              /intents/addIntent [post]
 func AddIntent(c *fiber.Ctx) error {
 	newIntent := new(Intent)
 	if err := c.BodyParser(newIntent); err != nil {
@@ -106,8 +106,8 @@ func AddIntent(c *fiber.Ctx) error {
 	}
 	s, err := queryForInsertIntent(*newIntent)
 	CheckForErr(err)
-	middleware.WriteLogMain(c)
-	middleware.InsertLog(c)
+	// middleware.WriteLogMain(c)
+	// middleware.InsertLog(c)
 	return c.SendString(string(s))
 }
 
@@ -127,7 +127,7 @@ func AddIntent(c *fiber.Ctx) error {
 // @Failure      400  {object}  HTTPError
 // @Failure      404  {object}  HTTPError
 // @Failure      500  {object}  HTTPError
-// @Router       /deleteIntent [delete]
+// @Router       /intents/deleteIntent [delete]
 func DeleteIntent(c *fiber.Ctx) error {
 	var intent Intent
 	if err := c.BodyParser(&intent); err != nil {
@@ -137,7 +137,7 @@ func DeleteIntent(c *fiber.Ctx) error {
 	// fmt.Println(intentName)
 	s, err := queryForDeleteIntent(intent)
 	CheckForErr(err)
-	middleware.WriteLogMain(c)
+	// middleware.WriteLogMain(c)
 	middleware.InsertLog(c)
 	return c.SendString(string(s))
 }
@@ -151,7 +151,7 @@ func DeleteIntent(c *fiber.Ctx) error {
 // @Failure      400  {object}  HTTPError
 // @Failure      404  {object}  HTTPError
 // @Failure      500  {object}  HTTPError
-// @Router       /modifyIntent [patch]
+// @Router       /intents/modifyIntent [patch]
 func ModifyIntent(c *fiber.Ctx) error {
 	var intent Intent
 	if err := c.BodyParser(&intent); err != nil {
@@ -159,7 +159,7 @@ func ModifyIntent(c *fiber.Ctx) error {
 	}
 	_, err := queryForModifyIntent(intent)
 	CheckForErr(err)
-	middleware.WriteLogMain(c)
+	// middleware.WriteLogMain(c)
 	middleware.InsertLog(c)
 	return c.Status(200).JSON(&fiber.Map{
 		"intentName":      intent.NewName,

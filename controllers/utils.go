@@ -201,7 +201,7 @@ func queryForAllIntents() []Intent {
 		id               int
 		intent_name      string
 		training_phrases sql.NullString
-		message_content  string
+		message_content  sql.NullString
 		prompt_question  sql.NullString
 		created_at       sql.NullTime
 		updated_at       sql.NullTime
@@ -222,7 +222,7 @@ func queryForAllIntents() []Intent {
 				TrainingPhrases: stringToSlice(training_phrases.String),
 				Reply: models.ResponseMessage{
 					IntentID:       id,
-					MessageContent: message_content,
+					MessageContent: message_content.String,
 				},
 				Prompts: models.Prompt{
 					IntentID:       id,
