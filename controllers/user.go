@@ -3,9 +3,12 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/link5401/fiber-chatbot/config"
+	"github.com/link5401/fiber-chatbot/database"
 	"github.com/link5401/fiber-chatbot/middleware"
 	models "github.com/link5401/fiber-chatbot/models"
 )
@@ -90,6 +93,11 @@ func Login(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(501).JSON(fiber.Map{"message": "system_error"})
 	}
+	store := database.ConfigSession()
+	time_expire := config.Config("JWT_EXPIRED_TIME")
+	minutesCount, _ := strconv.Atoi(time_expire)
+	store.Set(user.Username, []byte(token), time.Duration(minutesCount)*time.Minute)
+	fmt.Println(store)
 	return c.JSON(fiber.Map{
 		"UserName":       input.Username,
 		"MessageContent": "success",

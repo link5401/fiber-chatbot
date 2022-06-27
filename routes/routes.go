@@ -25,6 +25,7 @@ func SetupFiberRoute(app *fiber.App) {
 	//mainpage
 	app.Get("/", helloWorld)
 
+	//Swagger configration
 	app.Get("/swagger/*", swagger.HandlerDefault)     // default
 	app.Get("/swagger/*", swagger.New(swagger.Config{ // custom
 		URL:         "http://example.com/doc.json",
@@ -40,12 +41,14 @@ func SetupFiberRoute(app *fiber.App) {
 		OAuth2RedirectUrl: "http://localhost:3000/swagger/oauth2-redirect.html",
 	}))
 
+	// intents tags
 	app.Post("/intents/replyIntent", controllers.ReplyIntent)
 	app.Post("/intents/addIntent", controllers.AddIntent)
 	app.Get("/intents/listIntent", controllers.ListIntent)
 	app.Delete("/intents/deleteIntent", controllers.DeleteIntent)
 	app.Patch("/intents/modifyIntent", controllers.ModifyIntent)
 
+	//users tags
 	app.Post("/users/addUser", controllers.AddUser)
 	app.Post("/users/Login", controllers.Login)
 }

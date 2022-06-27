@@ -32,8 +32,8 @@ import (
 func main() {
 	database.Connect()
 	controllers.DB = database.DB
-	// *Fiber setup
 
+	// *Fiber setup and logging
 	dir_path := "./assets/log/system"
 	file_name := fmt.Sprintf("%s/%s.txt", dir_path, time.Now().Format("2006-01-02"))
 	file, err := os.OpenFile(file_name, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
