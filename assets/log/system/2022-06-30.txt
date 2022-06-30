@@ -149,3 +149,8 @@
 2022-06-30 10:55:01 | 127.0.0.1 | POST | 200 - - | /intents/ReplyIntent 
 2022-06-30 10:55:24 | 127.0.0.1 | POST | 200 - - | /intents/ReplyIntent 
 2022-06-30 10:55:37 | 127.0.0.1 | POST | 200 - - | /intents/ReplyIntent 
+2022-06-30 14:04:10 | 127.0.0.1 | GET | 200 - - | index.html 
+2022-06-30 14:04:10 | 127.0.0.1 | GET | 200 - - | swagger-ui.css 
+2022-06-30 14:04:10 | 127.0.0.1 | GET | 200 - - | swagger-ui-bundle.js 
+2022-06-30 14:04:10 | 127.0.0.1 | GET | 200 - - | swagger-ui-standalone-preset.js 
+2022-06-30 14:04:10 | 127.0.0.1 | GET | 200 - - | doc.json 
