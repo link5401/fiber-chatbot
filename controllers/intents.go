@@ -7,22 +7,24 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/link5401/fiber-chatbot/middleware"
+	"github.com/pusher/pusher-http-go"
 )
 
 // @Tags				Intents
 // @Summary      List all intents and training phrases
+// @Param        token header string true  "token"
 // @Description  List all intents
 // @Produce      json
 // @Success      200  {object}  []Intent
 // @Failure      400  {object}  HTTPError
 // @Failure      404  {object}  HTTPError
 // @Failure      500  {object}  HTTPError
-// @Router       /intents/listIntent [get]
+// @Router       /intents/listIntent [post]
 func ListIntent(c *fiber.Ctx) error {
 
 	i := queryForAllIntents()
 	// middleware.WriteLogMain(c)
-	middleware.InsertLog(c)
+	// middleware.InsertLog(c)
 	return c.Status(200).JSON(&fiber.Map{
 		"intentList": i,
 	})
@@ -33,12 +35,20 @@ func ListIntent(c *fiber.Ctx) error {
  *                This function will query Prompt and Response with a InputMessage int request body
  @param (fiber.Ctx): context of fiber. This is mainly to access request/response.
 */
+var pusherClient = pusher.Client{
+	AppID:   "1429753",
+	Key:     "50d2887e8902ddf96951",
+	Secret:  "7c8d0b7b144bd53a2394",
+	Cluster: "ap1",
+	Secure:  true,
+}
 
 // ReplyIntent ================================================================================
 // @Tags				Intents
 // @Summary      Reply to an intent
 // @Description  Reply to an intent that is POST request from user
 // @Param        inputMessage  body  InputMessage  true  "user id"
+// @Param        token header string true  "token"
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  ResponseMessage
@@ -49,10 +59,11 @@ func ListIntent(c *fiber.Ctx) error {
 func ReplyIntent(c *fiber.Ctx) error {
 	//Parses POST request
 	inputMessage := new(InputMessage)
-	if err := c.BodyParser(inputMessage); err != nil {
+	if err := c.BodyParser(&inputMessage); err != nil {
 		return c.SendStatus(http.StatusBadRequest)
 	}
 
+	fmt.Println(inputMessage)
 	//Query
 	p, p_err := queryForPrompt(*inputMessage)
 	CheckForErr(p_err)
@@ -74,7 +85,9 @@ func ReplyIntent(c *fiber.Ctx) error {
 			"UserID":         pResponse.UserID,
 		})
 	}
+
 	// middleware.WriteLogMain(c)
+
 	middleware.InsertLog(c)
 	return c.Status(200).JSON(&fiber.Map{
 		"MessageContent": rResponse.MessageContent,
@@ -93,6 +106,7 @@ func ReplyIntent(c *fiber.Ctx) error {
 // @Summary             Add an intent to DB
 // @Description         Add an intent to DB
 // @Param               newIntent  body  Intent  true  "Name of new intent"
+// @Param        		token header string true  "token"
 // @deletedFlag(hidden  = true)
 // @Accept              json
 // @Produce             json
@@ -124,6 +138,7 @@ func AddIntent(c *fiber.Ctx) error {
 // @Summary      Delte an intent by querying intent name
 // @Description  Delete an intent from DB, ===ONLY NEED  TO PASS IN IntentName===
 // @Param        intentName  body  Intent  true  "Name of the intent that you want to delete from db"
+// @Param        token header string true  "token"
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  ResponseMessage
@@ -134,7 +149,7 @@ func AddIntent(c *fiber.Ctx) error {
 func DeleteIntent(c *fiber.Ctx) error {
 	var intent Intent
 	if err := c.BodyParser(&intent); err != nil {
-		fmt.Println(err)
+		// fmt.Println(err)
 		return c.SendStatus(http.StatusBadRequest)
 	}
 	// fmt.Println(intentName)
@@ -149,6 +164,7 @@ func DeleteIntent(c *fiber.Ctx) error {
 // @Summary      Modify an intent
 // @Description  Modify an intent to the body's intent by querying "IntentName".
 // @Param        intent  body  Intent  true  "The new intent, pass in NewName to change the current name"
+// @Param        token header string true  "token"
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  Intent

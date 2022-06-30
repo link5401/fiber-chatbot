@@ -81,6 +81,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.InputMessage'
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -115,6 +120,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.Intent'
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -149,6 +159,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.Intent'
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -172,8 +187,14 @@ paths:
       tags:
       - Intents
   /intents/listIntent:
-    get:
+    post:
       description: List all intents
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -210,6 +231,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.Intent'
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -232,6 +258,39 @@ paths:
       summary: Modify an intent
       tags:
       - Intents
+  /users/CheckToken:
+    post:
+      consumes:
+      - application/json
+      description: CheckToken
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+        "501":
+          description: Not Implemented
+          schema:
+            $ref: '#/definitions/controllers.HTTPError'
+      summary: CheckToken
+      tags:
+      - users
   /users/Login:
     post:
       consumes:

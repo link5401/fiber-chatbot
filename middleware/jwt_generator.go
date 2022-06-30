@@ -25,7 +25,8 @@ func GenerateJWToken(user_name, user_agent, ip_address string) (string, error) {
 	claims["user_name"] = user_name
 	claims["user_agent"] = user_agent
 	claims["ip_address"] = ip_address
-	claims["createdat"] = time.Now().Add(time.Minute * time.Duration(minutesCount)).Unix()
+	claims["createdat"] = time.Now().Unix()
+	claims["exp"] = time.Now().Add(time.Minute * time.Duration(minutesCount)).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	t, err := token.SignedString([]byte(secret_key))

@@ -46,6 +46,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.InputMessage"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -98,6 +105,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.Intent"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -150,6 +164,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.Intent"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -181,7 +202,7 @@ const docTemplate = `{
             }
         },
         "/intents/listIntent": {
-            "get": {
+            "post": {
                 "description": "List all intents",
                 "produces": [
                     "application/json"
@@ -190,6 +211,15 @@ const docTemplate = `{
                     "Intents"
                 ],
                 "summary": "List all intents and training phrases",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -243,6 +273,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.Intent"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -266,6 +303,56 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/CheckToken": {
+            "post": {
+                "description": "CheckToken",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "CheckToken",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.HTTPError"
+                        }
+                    },
+                    "501": {
+                        "description": "Not Implemented",
                         "schema": {
                             "$ref": "#/definitions/controllers.HTTPError"
                         }

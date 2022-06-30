@@ -3,7 +3,6 @@ package controllers
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -156,7 +155,7 @@ func queryForInsertIntent(newIntent Intent) ([]byte, error) {
 		return makeReplyJSON("admin", err.Error())
 	}
 	//check if the bot should insert prompt or message content
-	fmt.Println(allPromptQuestion)
+	// fmt.Println(allPromptQuestion)
 	if allPromptQuestion != "" {
 
 		DB.Exec(insertPromptQuery, getCurrentID(), allPromptQuestion)
@@ -208,8 +207,8 @@ func queryForAllIntents() []Intent {
 		DeletedFlag      sql.NullBool
 		intent           []Intent
 	)
-	rows, err := DB.Raw(listAllIntent).Rows()
-	fmt.Println(CheckForErr(err))
+	rows, _ := DB.Raw(listAllIntent).Rows()
+	// fmt.Println(CheckForErr(err))
 	defer rows.Close()
 	for rows.Next() {
 		if err := rows.Scan(&id, &intent_name, &training_phrases, &created_at, &updated_at, &DeletedFlag, &message_content, &prompt_question); err != nil {
@@ -261,7 +260,7 @@ func queryForModifyIntent(intent Intent) ([]byte, error) {
 	DB.Exec(updateResponse, intent.Reply.MessageContent, intentID)
 
 	DB.Exec(modifyLogQuery, time.Now().Format(TimeFormat), intentID)
-	fmt.Println(intent.ID)
+	// fmt.Println(intent.ID)
 	i, err := json.Marshal(intent)
 	return i, err
 }

@@ -102,3 +102,24 @@ func Login(c *fiber.Ctx) error {
 	})
 
 }
+
+// @Tags         users
+// @Summary      CheckToken
+// @Description  CheckToken
+// @Param        token header string true  "token"
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}    string
+// @Failure      400  {object}    HTTPError
+// @Failure      500  {object}    HTTPError
+// @Failure      501  {object}    HTTPError
+// @Router       /users/CheckToken [post]
+func CheckToken(c *fiber.Ctx) error {
+	TokenData, _ := middleware.ExtractTokenData(c)
+	// fmt.Println(TokenData.Username)
+	store := database.ConfigSession()
+	return c.Status(200).JSON(fiber.Map{
+		"TokenData": TokenData,
+		"storeData": store,
+	})
+}
