@@ -12,8 +12,8 @@ const docTemplate = `{
         "title": "{{.Title}}",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
-            "name": "API Support",
-            "email": "fiber@swagger.io"
+            "name": "Linh",
+            "email": "linh.ldx@vn-cubesystem.com"
         },
         "license": {
             "name": "Apache 2.0",
@@ -39,7 +39,7 @@ const docTemplate = `{
                 "summary": "Reply to an intent",
                 "parameters": [
                     {
-                        "description": "user id",
+                        "description": "Message from the user",
                         "name": "inputMessage",
                         "in": "body",
                         "required": true,
@@ -362,7 +362,7 @@ const docTemplate = `{
         },
         "/users/Login": {
             "post": {
-                "description": "Login",
+                "description": "Login to get the token",
                 "consumes": [
                     "application/json"
                 ],
@@ -375,7 +375,7 @@ const docTemplate = `{
                 "summary": "Login",
                 "parameters": [
                     {
-                        "description": "user1",
+                        "description": "User information",
                         "name": "user",
                         "in": "body",
                         "required": true,
@@ -414,7 +414,7 @@ const docTemplate = `{
         },
         "/users/addUser": {
             "post": {
-                "description": "Modify an user.",
+                "description": "Register a user to the database.",
                 "consumes": [
                     "application/json"
                 ],
@@ -427,7 +427,7 @@ const docTemplate = `{
                 "summary": "Add an user",
                 "parameters": [
                     {
-                        "description": "user1",
+                        "description": "User information",
                         "name": "user",
                         "in": "body",
                         "required": true,

@@ -47,7 +47,7 @@ var pusherClient = pusher.Client{
 // @Tags				Intents
 // @Summary      Reply to an intent
 // @Description  Reply to an intent that is POST request from user
-// @Param        inputMessage  body  InputMessage  true  "user id"
+// @Param        inputMessage  body  InputMessage  true  "Message from the user"
 // @Param        token header string true  "token"
 // @Accept       json
 // @Produce      json

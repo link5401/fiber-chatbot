@@ -25,8 +25,8 @@ import (
 // @version         1.0
 // @description     Chatbot API with Fiber
 // @termsOfService  http://swagger.io/terms/
-// @contact.name    API Support
-// @contact.email   fiber@swagger.io
+// @contact.name    Linh
+// @contact.email   linh.ldx@vn-cubesystem.com
 // @license.name    Apache 2.0
 // @license.url     http://www.apache.org/licenses/LICENSE-2.0.html
 // @host            localhost:3000

@@ -59,8 +59,8 @@ definitions:
 host: localhost:3000
 info:
   contact:
-    email: fiber@swagger.io
-    name: API Support
+    email: linh.ldx@vn-cubesystem.com
+    name: Linh
   description: Chatbot API with Fiber
   license:
     name: Apache 2.0
@@ -75,7 +75,7 @@ paths:
       - application/json
       description: Reply to an intent that is POST request from user
       parameters:
-      - description: user id
+      - description: Message from the user
         in: body
         name: inputMessage
         required: true
@@ -295,9 +295,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Login
+      description: Login to get the token
       parameters:
-      - description: user1
+      - description: User information
         in: body
         name: user
         required: true
@@ -329,9 +329,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Modify an user.
+      description: Register a user to the database.
       parameters:
-      - description: user1
+      - description: User information
         in: body
         name: user
         required: true

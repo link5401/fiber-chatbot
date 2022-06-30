@@ -14,8 +14,8 @@ import (
 
 // @Tags         users
 // @Summary      Add an user
-// @Description  Modify an user.
-// @Param        user  body  models.User  true  "user1"
+// @Description  Register a user to the database.
+// @Param        user  body  models.User  true  "User information"
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}    ResponseMessage
@@ -54,8 +54,8 @@ func AddUser(c *fiber.Ctx) error {
 
 // @Tags         users
 // @Summary      Login
-// @Description  Login
-// @Param        user  body  models.User  true  "user1"
+// @Description  Login to get the token
+// @Param        user  body  models.User  true  "User information"
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}    string
